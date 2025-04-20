@@ -4,6 +4,12 @@ slug: "teison_ev_charger"
 description: "Control a Teison EV Charger via cloud API"
 startup: "application"
 boot: "auto"
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
 options:
   username: ""
   password: ""
