@@ -1,6 +1,7 @@
 FROM python:3.11-slim
 
-RUN pip install flask requests paho-mqtt pycryptodome
+RUN apk add --no-cache py3-pip
+RUN pip install --no-cache-dir --upgrade paho-mqtt requests pycryptodome flask
 
 COPY run.sh /run.sh
 COPY teison.py /teison.py
