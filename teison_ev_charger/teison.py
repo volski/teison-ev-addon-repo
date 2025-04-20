@@ -11,13 +11,8 @@ from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5
 # Config
 HA_BASE_URL = "http://homeassistant.local:8123/api/states/"
-HA_TOKEN = os.getenv("SUPERVISOR_TOKEN")
-if not HA_TOKEN:
-    sys.exit("Error: SUPERVISOR_TOKEN is not set. This must be available in Hass.io add-ons.")
-HEADERS = {
-    "Authorization": f"Bearer {HA_TOKEN}",
-    "Content-Type": "application/json"
-}
+
+
 # Public key for password encryption
 public_key_pem = """-----BEGIN PUBLIC KEY-----
 MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDKzH8tu+lGYMkT61r7FCdBZ/ez
@@ -43,9 +38,15 @@ mqtt_port = config.get('mqtt_port')
 mqtt_user = config.get('mqtt_user')
 mqtt_pass = config.get('mqtt_pass')
 device_index = config.get('device_index', 0)
+HA_TOKEN = config.get('access_token')
 
 token = None
 device_id = None
+
+HEADERS = {
+    "Authorization": f"Bearer {HA_TOKEN}",
+    "Content-Type": "application/json"
+}
 
 def login_and_get_device():
     global token, device_id
