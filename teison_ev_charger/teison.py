@@ -214,7 +214,8 @@ def get_device_status(status: int) -> str:
 
 login_and_get_device()
 
-client = mqtt.Client()
+client = mqtt.Client(protocol=mqtt.MQTTv311)
+client.enable_logger()
 client.username_pw_set(mqtt_user, mqtt_pass)
 client.on_connect = on_connect
 client.on_message = on_message
