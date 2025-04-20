@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
-RUN pip install flask requests paho-mqtt
+RUN pip install flask requests paho-mqtt pycryptodome
 
 COPY run.sh /run.sh
 COPY teison.py /teison.py
