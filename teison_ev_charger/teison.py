@@ -68,6 +68,12 @@ def mqtt_publish_status():
                 headers=headers
             )
             status = res.json()
+            current = status.get("bizdata", {}).get("current")
+            print("Current:", current)
+            current2 = status.get("bizdata", {}).get("current2")
+            print("Current2:", current2)
+            current3 = status.get("bizdata", {}).get("current3")
+            print("Current3:", current3)
             client.publish("teison/evcharger/status", json.dumps(status))
         time.sleep(30)
 
