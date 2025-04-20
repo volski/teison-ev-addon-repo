@@ -89,31 +89,53 @@ def mqtt_publish_status():
                 headers=headers
             )
             status = res.json()
-            current = status.get("bizdata", {}).get("current")
+            voltage = status.get("bizData", {}).get("voltage")
+            print("Voltage:", voltage)
+            voltage2 = status.get("bizData", {}).get("voltage2")
+            print("Voltage2:", voltage2)
+            voltage3 = status.get("bizData", {}).get("voltage3")
+            print("Voltage3:", voltage3)
+
+            current = status.get("bizData", {}).get("current")
             print("Current:", current)
-            current2 = status.get("bizdata", {}).get("current2")
+            current2 = status.get("bizData", {}).get("current2")
             print("Current2:", current2)
-            current3 = status.get("bizdata", {}).get("current3")
+            current3 = status.get("bizData", {}).get("current3")
             print("Current3:", current3)
+
+            connStatus = status.get("bizData", {}).get("connStatus")
+            print("connStatus:", connStatus)
 
 
             # Post each sensor
-            post_sensor("ev_charger_status", current, {
+            post_sensor("ev_charger_status", get_device_status(connStatus), {
                 "friendly_name": "EV Charger Status",
                 "icon": "mdi:ev-station"
             })
+            #
+            # post_sensor("ev_charger_power", voltage2, {
+            #     "unit_of_measurement": "kW",
+            #     "device_class": "power",
+            #     "friendly_name": "EV Charger Power",
+            #     "icon": "mdi:flash"
+            # })
 
-            post_sensor("ev_charger_power", current2, {
-                "unit_of_measurement": "kW",
-                "device_class": "power",
-                "friendly_name": "EV Charger Power",
-                "icon": "mdi:flash"
-            })
-
-            post_sensor("ev_charger_voltage", current3, {
+            post_sensor("ev_charger_voltage", voltage, {
                 "unit_of_measurement": "V",
                 "device_class": "voltage",
                 "friendly_name": "EV Charger Voltage",
+                "icon": "mdi:flash-outline"
+            })
+            post_sensor("ev_charger_voltage2", voltage2, {
+                "unit_of_measurement": "V",
+                "device_class": "voltage",
+                "friendly_name": "EV Charger Voltage2",
+                "icon": "mdi:flash-outline"
+            })
+            post_sensor("ev_charger_voltage3", voltage3, {
+                "unit_of_measurement": "V",
+                "device_class": "voltage",
+                "friendly_name": "EV Charger Voltage3",
                 "icon": "mdi:flash-outline"
             })
 
@@ -123,8 +145,20 @@ def mqtt_publish_status():
                 "friendly_name": "EV Charger Current",
                 "icon": "mdi:current-ac"
             })
+            post_sensor("ev_charger_current2", current2, {
+                "unit_of_measurement": "A",
+                "device_class": "current",
+                "friendly_name": "EV Charger Current2",
+                "icon": "mdi:current-ac"
+            })
+            post_sensor("ev_charger_current3", current3, {
+                "unit_of_measurement": "A",
+                "device_class": "current",
+                "friendly_name": "EV Charger Current3",
+                "icon": "mdi:current-ac"
+            })
             # client.publish("teison/evcharger/status", json.dumps(status))
-        time.sleep(30)
+        time.sleep(10)
 
 def on_connect(client, userdata, flags, rc):
     print("Connected to MQTT")
@@ -144,6 +178,23 @@ def on_message(client, userdata, msg):
                 f'https://cloud.teison.com/cpAm2/cp/stopCharge/{device_id}',
                 headers=headers
             )
+def get_device_status(status: int) -> str:
+    if status == 88:
+        return "Faulted"
+
+    status_map = {
+        0: "Available",
+        1: "Preparing",
+        2: "Charging",
+        3: "SuspendedEVSE",
+        4: "SuspendedEV",
+        5: "Finished",
+        6: "Reserved",
+        7: "Unavailable",
+        8: "Faulted",
+    }
+
+    return status_map.get(status, "")
 
 login_and_get_device()
 
