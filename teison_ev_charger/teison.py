@@ -1,9 +1,10 @@
 import os
 import json
+import sys
 import time
 import requests
 import threading
-import paho.mqtt.client as mqtt
+# import paho.mqtt.client as mqtt
 from flask import Flask, jsonify, request
 from base64 import b64encode
 from Crypto.PublicKey import RSA
@@ -11,6 +12,8 @@ from Crypto.Cipher import PKCS1_v1_5
 # Config
 HA_BASE_URL = "http://homeassistant.local:8123/api/states/"
 HA_TOKEN = os.getenv("SUPERVISOR_TOKEN")
+if not HA_TOKEN:
+    sys.exit("Error: SUPERVISOR_TOKEN is not set. This must be available in Hass.io add-ons.")
 HEADERS = {
     "Authorization": f"Bearer {HA_TOKEN}",
     "Content-Type": "application/json"
@@ -85,46 +88,46 @@ def mqtt_publish_status():
                 headers=headers
             )
             status = res.json()
-            current = status.get("bizdata", {}).get("current")
-            print("Current:", current)
-            current2 = status.get("bizdata", {}).get("current2")
-            print("Current2:", current2)
-            current3 = status.get("bizdata", {}).get("current3")
-            print("Current3:", current3)
+            voltage = status.get("bizdata", {}).get("voltage")
+            print("Voltage:", voltage)
+            voltage2 = status.get("bizdata", {}).get("voltage2")
+            print("Voltage2:", voltage2)
+            voltage3 = status.get("bizdata", {}).get("voltage3")
+            print("Voltage3:", voltage3)
 
 
             # Post each sensor
-            post_sensor("ev_charger_status", current, {
+            post_sensor("ev_charger_status", voltage, {
                 "friendly_name": "EV Charger Status",
                 "icon": "mdi:ev-station"
             })
 
-            post_sensor("ev_charger_power", current2, {
+            post_sensor("ev_charger_power", voltage2, {
                 "unit_of_measurement": "kW",
                 "device_class": "power",
                 "friendly_name": "EV Charger Power",
                 "icon": "mdi:flash"
             })
 
-            post_sensor("ev_charger_voltage", current3, {
+            post_sensor("ev_charger_voltage", voltage3, {
                 "unit_of_measurement": "V",
                 "device_class": "voltage",
                 "friendly_name": "EV Charger Voltage",
                 "icon": "mdi:flash-outline"
             })
 
-            post_sensor("ev_charger_current", current, {
+            post_sensor("ev_charger_current", voltage, {
                 "unit_of_measurement": "A",
                 "device_class": "current",
                 "friendly_name": "EV Charger Current",
                 "icon": "mdi:current-ac"
             })
-            client.publish("teison/evcharger/status", json.dumps(status))
+            # client.publish("teison/evcharger/status", json.dumps(status))
         time.sleep(30)
 
 def on_connect(client, userdata, flags, rc):
     print("Connected to MQTT")
-    client.subscribe("teison/evcharger/command")
+    # client.subscribe("teison/evcharger/command")
 
 def on_message(client, userdata, msg):
     payload = msg.payload.decode()
@@ -143,13 +146,13 @@ def on_message(client, userdata, msg):
 
 login_and_get_device()
 
-client = mqtt.Client()
-client.username_pw_set(mqtt_user, mqtt_pass)
-client.on_connect = on_connect
-client.on_message = on_message
-client.connect(mqtt_host, mqtt_port, 60)
+# client = mqtt.Client()
+# client.username_pw_set(mqtt_user, mqtt_pass)
+# client.on_connect = on_connect
+# client.on_message = on_message
+# client.connect(mqtt_host, mqtt_port, 60)
 
-threading.Thread(target=client.loop_forever, daemon=True).start()
+# threading.Thread(target=client.loop_forever, daemon=True).start()
 threading.Thread(target=mqtt_publish_status, daemon=True).start()
 
 app = Flask(__name__)
