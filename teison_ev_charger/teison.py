@@ -12,8 +12,6 @@ from Crypto.Cipher import PKCS1_v1_5
 # Config
 HA_BASE_URL = "http://homeassistant.local:8123/api/states/"
 HA_TOKEN = os.getenv("SUPERVISOR_TOKEN")
-if not HA_TOKEN:
-    sys.exit("Error: SUPERVISOR_TOKEN is not set. This must be available in Hass.io add-ons.")
 HEADERS = {
     "Authorization": f"Bearer {HA_TOKEN}",
     "Content-Type": "application/json"
