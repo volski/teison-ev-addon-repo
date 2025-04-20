@@ -106,19 +106,32 @@ def mqtt_publish_status():
             connStatus = status.get("bizData", {}).get("connStatus")
             print("connStatus:", connStatus)
 
+            energy = status.get("bizData", {}).get("energy")
+            print("energy:", energy)
+
+            temperature = status.get("bizData", {}).get("temperature")
+            print("temperature:", temperature)
+
 
             # Post each sensor
             post_sensor("ev_charger_status", get_device_status(connStatus), {
                 "friendly_name": "EV Charger Status",
                 "icon": "mdi:ev-station"
             })
-            #
-            # post_sensor("ev_charger_power", voltage2, {
-            #     "unit_of_measurement": "kW",
-            #     "device_class": "power",
-            #     "friendly_name": "EV Charger Power",
-            #     "icon": "mdi:flash"
-            # })
+
+            post_sensor("ev_charger_power", energy, {
+                "unit_of_measurement": "kW",
+                "device_class": "power",
+                "friendly_name": "EV Charger Power",
+                "icon": "mdi:flash"
+            })
+
+            post_sensor("ev_charger_temperature", temperature, {
+                "unit_of_measurement": "C",
+                "device_class": "power",
+                "friendly_name": "EV Charger Temperature",
+                "icon": "mdi:temperature-celsius"
+            })
 
             post_sensor("ev_charger_voltage", voltage, {
                 "unit_of_measurement": "V",
@@ -163,6 +176,7 @@ def mqtt_publish_status():
 def on_connect(client, userdata, flags, rc):
     print("Connected to MQTT")
     client.subscribe("teison/evcharger/command")
+    client.subscribe("teison/charger/set")
 
 def on_message(client, userdata, msg):
     payload = msg.payload.decode()
@@ -173,11 +187,13 @@ def on_message(client, userdata, msg):
                 f'https://cloud.teison.com/cpAm2/cp/startCharge/{device_id}',
                 headers=headers
             )
+            client.publish("teison/charger/state", "start")
         elif payload == "stop":
             requests.get(
                 f'https://cloud.teison.com/cpAm2/cp/stopCharge/{device_id}',
                 headers=headers
             )
+            client.publish("teison/charger/state", "stop")
 def get_device_status(status: int) -> str:
     if status == 88:
         return "Faulted"
