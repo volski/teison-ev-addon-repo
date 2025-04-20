@@ -8,7 +8,13 @@ from flask import Flask, jsonify, request
 from base64 import b64encode
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5
-
+# Config
+HA_BASE_URL = "http://homeassistant.local:8123/api/states/"
+HA_TOKEN = os.getenv("SUPERVISOR_TOKEN")
+HEADERS = {
+    "Authorization": f"Bearer {HA_TOKEN}",
+    "Content-Type": "application/json"
+}
 # Public key for password encryption
 public_key_pem = """-----BEGIN PUBLIC KEY-----
 MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDKzH8tu+lGYMkT61r7FCdBZ/ez
@@ -58,6 +64,17 @@ def login_and_get_device():
     if len(device_list) > device_index:
         device_id = device_list[device_index]['id']
         print(f"Using device ID: {device_id}")
+def post_sensor(sensor_id, state, attributes):
+    try:
+        url = f"{HA_BASE_URL}sensor.{sensor_id}"
+        payload = {
+            "state": state,
+            "attributes": attributes
+        }
+        response = requests.post(url, headers=HEADERS, data=json.dumps(payload))
+        print(f"Updated {sensor_id}: {response.status_code} - {response.text}")
+    except Exception as e:
+        print(f"Error updating {sensor_id}: {e}")
 
 def mqtt_publish_status():
     while True:
@@ -74,6 +91,34 @@ def mqtt_publish_status():
             print("Current2:", current2)
             current3 = status.get("bizdata", {}).get("current3")
             print("Current3:", current3)
+
+
+            # Post each sensor
+            post_sensor("ev_charger_status", current, {
+                "friendly_name": "EV Charger Status",
+                "icon": "mdi:ev-station"
+            })
+
+            post_sensor("ev_charger_power", current2, {
+                "unit_of_measurement": "kW",
+                "device_class": "power",
+                "friendly_name": "EV Charger Power",
+                "icon": "mdi:flash"
+            })
+
+            post_sensor("ev_charger_voltage", current3, {
+                "unit_of_measurement": "V",
+                "device_class": "voltage",
+                "friendly_name": "EV Charger Voltage",
+                "icon": "mdi:flash-outline"
+            })
+
+            post_sensor("ev_charger_current", current, {
+                "unit_of_measurement": "A",
+                "device_class": "current",
+                "friendly_name": "EV Charger Current",
+                "icon": "mdi:current-ac"
+            })
             client.publish("teison/evcharger/status", json.dumps(status))
         time.sleep(30)
 
