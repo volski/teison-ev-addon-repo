@@ -4,7 +4,7 @@ import sys
 import time
 import requests
 import threading
-# import paho.mqtt.client as mqtt
+import paho.mqtt.client as mqtt
 from flask import Flask, jsonify, request
 from base64 import b64encode
 from Crypto.PublicKey import RSA
@@ -174,7 +174,7 @@ def on_message(client, userdata, msg):
                 headers=headers
             )
         elif payload == "stop":
-            requests.post(
+            requests.get(
                 f'https://cloud.teison.com/cpAm2/cp/stopCharge/{device_id}',
                 headers=headers
             )
@@ -198,14 +198,28 @@ def get_device_status(status: int) -> str:
 
 login_and_get_device()
 
-# client = mqtt.Client()
-# client.username_pw_set(mqtt_user, mqtt_pass)
-# client.on_connect = on_connect
-# client.on_message = on_message
-# client.connect(mqtt_host, mqtt_port, 60)
+client = mqtt.Client()
+client.username_pw_set(mqtt_user, mqtt_pass)
+client.on_connect = on_connect
+client.on_message = on_message
+client.connect(mqtt_host, mqtt_port, 60)
 
-# threading.Thread(target=client.loop_forever, daemon=True).start()
+threading.Thread(target=client.loop_forever, daemon=True).start()
 threading.Thread(target=mqtt_publish_status, daemon=True).start()
+
+# Publish discovery config
+client.publish(
+    "homeassistant/switch/teison_charger/config",
+    json.dumps({
+        "name": "Teison Charger",
+        "unique_id": "teison_charger_switch",
+        "command_topic": "teison/charger/set",
+        "state_topic": "teison/charger/state",
+        "payload_on": "start",
+        "payload_off": "stop"
+    }),
+    retain=True
+)
 
 app = Flask(__name__)
 
