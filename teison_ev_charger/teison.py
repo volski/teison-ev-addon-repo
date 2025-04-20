@@ -4,7 +4,7 @@ import sys
 import time
 import requests
 import threading
-import paho.mqtt.client as mqtt
+# import paho.mqtt.client as mqtt
 from flask import Flask, jsonify, request
 from base64 import b64encode
 from Crypto.PublicKey import RSA
@@ -12,6 +12,8 @@ from Crypto.Cipher import PKCS1_v1_5
 # Config
 HA_BASE_URL = "http://homeassistant.local:8123/api/states/"
 HA_TOKEN = os.getenv("SUPERVISOR_TOKEN")
+if not HA_TOKEN:
+    sys.exit("Error: SUPERVISOR_TOKEN is not set. This must be available in Hass.io add-ons.")
 HEADERS = {
     "Authorization": f"Bearer {HA_TOKEN}",
     "Content-Type": "application/json"
@@ -120,7 +122,7 @@ def mqtt_publish_status():
                 "friendly_name": "EV Charger Current",
                 "icon": "mdi:current-ac"
             })
-            client.publish("teison/evcharger/status", json.dumps(status))
+            # client.publish("teison/evcharger/status", json.dumps(status))
         time.sleep(30)
 
 def on_connect(client, userdata, flags, rc):
@@ -144,13 +146,13 @@ def on_message(client, userdata, msg):
 
 login_and_get_device()
 
-client = mqtt.Client()
-client.username_pw_set(mqtt_user, mqtt_pass)
-client.on_connect = on_connect
-client.on_message = on_message
-client.connect(mqtt_host, mqtt_port, 60)
+# client = mqtt.Client()
+# client.username_pw_set(mqtt_user, mqtt_pass)
+# client.on_connect = on_connect
+# client.on_message = on_message
+# client.connect(mqtt_host, mqtt_port, 60)
 
-threading.Thread(target=client.loop_forever, daemon=True).start()
+# threading.Thread(target=client.loop_forever, daemon=True).start()
 threading.Thread(target=mqtt_publish_status, daemon=True).start()
 
 app = Flask(__name__)
