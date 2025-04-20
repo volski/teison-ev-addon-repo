@@ -176,10 +176,14 @@ def mqtt_publish_status():
 def on_connect(client, userdata, flags, rc):
     print("Connected to MQTT")
     client.subscribe("teison/evcharger/command")
+    print("subscribe - teison/evcharger/command")
     client.subscribe("teison/charger/set")
+    print("subscribe - teison/charger/set")
 
 def on_message(client, userdata, msg):
+
     payload = msg.payload.decode()
+    print(f"on_message - {payload}")
     if token and device_id:
         headers = {'token': token}
         if payload == "start":
