@@ -29,8 +29,8 @@ username: "your_teison_user"
 password: "your_teison_password"
 mqtt_host: "core-mosquitto"
 mqtt_port: 1883
-mqtt_user: "homeassistant"
-mqtt_pass: "mqtt_password"
+mqtt_user: "mqttuser"
+mqtt_pass: "mqttpass"
 device_index: 0  # Index of device in your account
 access_token: "" # Long-lived access tokens from hassio
 ```
