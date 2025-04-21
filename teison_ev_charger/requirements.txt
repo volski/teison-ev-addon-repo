@@ -2,3 +2,4 @@ flask
 requests
 paho-mqtt
 pycryptodome
+flask-cors

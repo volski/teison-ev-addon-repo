@@ -5,7 +5,8 @@ import time
 import requests
 import threading
 import paho.mqtt.client as mqtt
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
+from flask_cors import CORS
 from base64 import b64encode
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5
@@ -242,7 +243,16 @@ client.publish(
     retain=True
 )
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='frontend')
+CORS(app)
+
+@app.route('/')
+def index():
+    return send_from_directory(app.static_folder, 'index.html')
+
+@app.route('/<path:path>')
+def static_files(path):
+    return send_from_directory(app.static_folder, path)
 
 @app.route('/start', methods=['POST'])
 def start():
@@ -267,5 +277,21 @@ def status():
         r = requests.get(f'https://cloud.teison.com/cpAm2/cp/deviceDetail/{device_id}', headers=headers)
         return jsonify(r.json())
     return jsonify({"error": "Not ready"}), 400
+@app.route('/token', methods=['GET'])
+def get_token():
+    if token and device_id:
+        json_string = f'{{"token": "{token}", "device_id": {device_id}}}'
+        data = json.loads(json_string)
+        return jsonify(data)
+    return jsonify({"error": "Not ready"}), 400
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    encrypted_password = encrypt_password(data.get("password"))
+    login_res = requests.post(
+        'https://cloud.teison.com/api/v1/login/login',
+        json={"username": data.get("username"), "password": encrypted_password}
+    )
+    return jsonify(login_res.json())
 
 app.run(host='0.0.0.0', port=5000)
