@@ -45800,7 +45800,7 @@ var AuthService = class _AuthService {
   http;
   mainService;
   router;
-  localServer = "http://localhost:5000";
+  localServer = `http://${window.location.hostname}:5000/`;
   constructor(http, mainService, router) {
     this.http = http;
     this.mainService = mainService;
