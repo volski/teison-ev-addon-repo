@@ -13,7 +13,7 @@ This Home Assistant add-on lets you control a Teison EV charger via the Teison c
 
 1. Add this repo as a custom add-on repository in Home Assistant:
    ```
-   https://github.com/<your-username>/hassio-teison-addon
+   https://github.com/volski/teison-ev-addon-repo
    ```
 
 2. Install `Teison EV Charger` from the add-on store.
@@ -32,6 +32,7 @@ mqtt_port: 1883
 mqtt_user: "homeassistant"
 mqtt_pass: "mqtt_password"
 device_index: 0  # Index of device in your account
+access_token: "" # Long-lived access tokens from hassio
 ```
 
 ## REST Endpoints
