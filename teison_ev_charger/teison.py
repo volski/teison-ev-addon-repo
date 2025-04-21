@@ -113,6 +113,12 @@ def mqtt_publish_status():
             temperature = status.get("bizData", {}).get("temperature")
             print("temperature:", temperature)
 
+            spendTime = status.get("bizData", {}).get("spendTime") #convert milisecond to HH:MM:ss
+            print("spendTime:", spendTime)
+            accEnergy = status.get("bizData", {}).get("accEnergy") #energy in kWh
+            print("accEnergy:", accEnergy)
+            power = status.get("bizData", {}).get("power")  # power in w
+            print("accEnergy:", power)
 
             # Post each sensor
             post_sensor("ev_charger_status", get_device_status(connStatus), {
@@ -120,13 +126,25 @@ def mqtt_publish_status():
                 "icon": "mdi:ev-station"
             })
 
-            post_sensor("ev_charger_power", energy, {
-                "unit_of_measurement": "kW",
+            post_sensor("ev_charger_power", power, {
+                "unit_of_measurement": "w",
                 "device_class": "power",
                 "friendly_name": "EV Charger Power",
                 "icon": "mdi:flash"
             })
+            post_sensor("ev_charger_accEnergy", accEnergy, {
+                "unit_of_measurement": "kWh",
+                "device_class": "power",
+                "friendly_name": "EV Charger Energy",
+                "icon": "mdi:flash"
+            })
 
+            post_sensor("ev_charger_spendTime", ms_to_hms(spendTime), {
+                "unit_of_measurement": "Spend Time",
+                "device_class": "power",
+                "friendly_name": "EV Charger Power",
+                "icon": "mdi:flash"
+            })
             post_sensor("ev_charger_temperature", temperature, {
                 "unit_of_measurement": "C",
                 "device_class": "power",
@@ -173,6 +191,13 @@ def mqtt_publish_status():
             })
             # client.publish("teison/evcharger/status", json.dumps(status))
         time.sleep(10)
+def ms_to_hms(ms_string):
+    milliseconds = int(ms_string)
+    seconds = milliseconds // 1000
+    hours = seconds // 3600
+    minutes = (seconds % 3600) // 60
+    seconds = seconds % 60
+    return f"{hours:02}:{minutes:02}:{seconds:02}"
 
 def on_connect(client, userdata, flags, rc):
     print("Connected to MQTT")
