@@ -45,16 +45,13 @@ pull_interval = config.get('pull_interval',10)
 token = None
 device_id = None
 
-# Check if the script is running in Docker
-def is_docker():
-    # Check for Docker environment variable indicating a containerized environment
-    if 'DOCKER' in os.environ.get('PATH', '') or '/docker' in os.environ.get('HOME', '') or os.path.exists('/.dockerenv'):
-        return True
-    return False
+def is_hassio():
+    # Home Assistant OS mounts /data and /config in add-ons
+    return os.path.exists("/data") and os.path.exists("/config")
 
 
 # Set the file path based on the environment (Windows vs Docker)
-if is_docker():
+if is_hassio():
     # Absolute path in Docker container
     config_path = "/data/currency.json"  # Adjust this to the path inside the container
 else:
