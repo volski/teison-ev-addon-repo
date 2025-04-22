@@ -58,7 +58,7 @@ if is_hassio():
     config_path = "/data/currency.json"  # Adjust this to the path inside the container
 else:
     # Relative path on Windows or local development environment
-    config_path = "./data/currency.json"  # Adjust this to the path on your host machine
+    config_path = "/data/currency.json"  # Adjust this to the path on your host machine
 
 # Check if the file exists before opening
 if os.path.exists(config_path):
