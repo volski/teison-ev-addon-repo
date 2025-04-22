@@ -45,6 +45,10 @@ pull_interval = config.get('pull_interval',10)
 token = None
 device_id = None
 
+with open("./data/currency.json", "r") as f:
+    data = json.load(f)
+    currency_list = data.get("currencyList", [])
+
 HEADERS = {
     "Authorization": f"Bearer {HA_TOKEN}",
     "Content-Type": "application/json"
@@ -121,6 +125,22 @@ def mqtt_publish_status():
             power = status.get("bizData", {}).get("power")  # power in w
             print("accEnergy:", power)
 
+            res2 = requests.get(
+                f'https://cloud.teison.com/cpAm2/cp/getCpConfig/{device_id}',
+                headers=headers
+            )
+            getCpConfig = res2.json()
+            maxCurrent = getCpConfig.get("bizData", {}).get("maxCurrent")
+
+            res3 = requests.get(
+                f'https://cloud.teison.com/cpAm2/users/getRates',
+                headers=headers
+            )
+            getRates = res3.json()
+            rates = getRates.get("bizData", {}).get("rates")
+            currency = getRates.get("bizData", {}).get("currency")
+
+
             # Post each sensor
             post_sensor("ev_charger_status", get_device_status(connStatus), {
                 "friendly_name": "EV Charger Status",
@@ -190,6 +210,9 @@ def mqtt_publish_status():
                 "friendly_name": "EV Charger Current3",
                 "icon": "mdi:current-ac"
             })
+            client.publish("teison/charger/current/state", maxCurrent, retain=True)
+            client.publish("teison/power_rate/state", rates, retain=True)
+            client.publish("teison/currency/state", currency, retain=True)
             # client.publish("teison/evcharger/status", json.dumps(status))
         time.sleep(pull_interval)
 def ms_to_hms(ms_string):
@@ -209,6 +232,12 @@ def on_connect(client, userdata, flags, rc):
     print("subscribe - teison/evcharger/command")
     client.subscribe("teison/charger/set")
     print("subscribe - teison/charger/set")
+    client.subscribe("teison/charger/current/set")
+    print("subscribe - teison/charger/current/set")
+    client.subscribe("teison/power_rate/set")
+    print("subscribe - teison/power_rate/set")
+    client.subscribe("teison/currency/set")
+    print("subscribe - teison/currency/set")
 
 def on_message(client, userdata, msg):
 
@@ -216,7 +245,41 @@ def on_message(client, userdata, msg):
     print(f"on_message - {payload}")
     if token and device_id:
         headers = {'token': token}
-        if payload == "start":
+        if msg.topic == "teison/charger/current/set":
+            value = int(msg.payload.decode())
+            print(f"New current limit: {value}A")
+            payload = {
+                "key": "VendorMaxWorkCurrent",
+                "value": value,
+            }
+            requests.post(
+                f'https://cloud.teison.com/cpAm2/cp/changeCpConfig/{device_id}',
+                json=payload,
+                headers=headers
+            )
+        elif msg.topic == "teison/power_rate/set":
+            value = float(msg.payload.decode())
+            print(f"New power rate: {value}kwh")
+            payload = {
+                "rates": value,
+            }
+            requests.post(
+                f'https://cloud.teison.com/cpAm2/users/setRates',
+                json=payload,
+                headers=headers
+            )
+        elif msg.topic == "teison/currency/set":
+            value = msg.payload.decode()
+            print(f"New currency: {value}")
+            payload = {
+                "currency": value,
+            }
+            requests.post(
+                f'https://cloud.teison.com/cpAm2/users/setRates',
+                json=payload,
+                headers=headers
+            )
+        elif payload == "start":
             requests.post(
                 f'https://cloud.teison.com/cpAm2/cp/startCharge/{device_id}',
                 headers=headers
@@ -268,6 +331,51 @@ client.publish(
         "state_topic": "teison/charger/state",
         "payload_on": "start",
         "payload_off": "stop"
+    }),
+    retain=True
+)
+client.publish(
+    "homeassistant/number/teison_charger_current/config",
+    json.dumps({
+        "name": "Charging Max Current",
+        "unique_id": "teison_charger_max_current",
+        "command_topic": "teison/charger/current/set",
+        "state_topic": "teison/charger/current/state",
+        "min": 6,
+        "max": 32,
+        "step": 1,
+        "unit_of_measurement": "A",
+        "mode": "slider",
+        "retain": True
+    }),
+    retain=True
+)
+
+client.publish(
+    "homeassistant/select/teison_currency/config",
+    json.dumps({
+        "name": "Teison Currency",
+        "unique_id": "teison_currency_selector",
+        "command_topic": "teison/currency/set",
+        "state_topic": "teison/currency/state",
+        "options": currency_list,
+        "retain": True
+    }),
+    retain=True
+)
+client.publish(
+    "homeassistant/number/teison_power_limit/config",
+    json.dumps({
+        "name": "Teison Power Rate",
+        "unique_id": "teison_power_rate",
+        "command_topic": "teison/power_rate/set",
+        "state_topic": "teison/power_rate/state",
+        "min": 0.0,
+        "max": 9999999.0,
+        "step": 0.01,
+        "unit_of_measurement": "kwh",
+        "mode": "box",
+        "retain": True
     }),
     retain=True
 )

@@ -4,6 +4,7 @@ RUN pip install --no-cache-dir --upgrade paho-mqtt requests pycryptodome flask f
 
 COPY run.sh /run.sh
 COPY frontend /frontend
+COPY data /data
 COPY teison.py /teison.py
 RUN chmod +x /run.sh
 
