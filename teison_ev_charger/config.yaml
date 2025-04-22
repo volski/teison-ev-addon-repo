@@ -1,5 +1,5 @@
 name: "Teison EV Charger Control"
-version: "1.0.21"
+version: "1.0.22"
 slug: "teison_ev_charger"
 description: "Control a Teison EV Charger via cloud API"
 startup: "application"
@@ -19,6 +19,7 @@ options:
   mqtt_pass: "mqttpass"
   device_index: 0
   access_token: ""
+  pull_interval: 10
 schema:
   username: "str"
   password: "str"
@@ -28,6 +29,7 @@ schema:
   mqtt_pass: "str"
   device_index: "int"
   access_token: "str"
+  pull_interval: "int"
 ports:
   "5000/tcp": 5000
 webui: "http://[HOST]:[PORT:5000]"

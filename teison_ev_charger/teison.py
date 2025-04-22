@@ -40,6 +40,7 @@ mqtt_user = config.get('mqtt_user')
 mqtt_pass = config.get('mqtt_pass')
 device_index = config.get('device_index', 0)
 HA_TOKEN = config.get('access_token')
+pull_interval = config.get('pull_interval',10)
 
 token = None
 device_id = None
@@ -140,9 +141,9 @@ def mqtt_publish_status():
             })
 
             post_sensor("ev_charger_spendTime", ms_to_hms(spendTime), {
-                "unit_of_measurement": "Spend Time",
+                "unit_of_measurement": "",
                 "device_class": "power",
-                "friendly_name": "EV Charger Power",
+                "friendly_name": "EV Charger Duration",
                 "icon": "mdi:flash"
             })
             post_sensor("ev_charger_temperature", temperature, {
@@ -190,9 +191,12 @@ def mqtt_publish_status():
                 "icon": "mdi:current-ac"
             })
             # client.publish("teison/evcharger/status", json.dumps(status))
-        time.sleep(10)
+        time.sleep(pull_interval)
 def ms_to_hms(ms_string):
-    milliseconds = int(ms_string)
+    if ms_string is not None:
+        milliseconds = int(ms_string)
+    else:
+        milliseconds = 0
     seconds = milliseconds // 1000
     hours = seconds // 3600
     minutes = (seconds % 3600) // 60

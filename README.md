@@ -33,6 +33,7 @@ mqtt_user: "mqttuser"
 mqtt_pass: "mqttpass"
 device_index: 0  # Index of device in your account
 access_token: "" # Long-lived access tokens from hassio
+pull_interval: 10 # pulling interval in seconds
 ```
 
 ## REST Endpoints
