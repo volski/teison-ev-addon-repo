@@ -46,8 +46,10 @@ token = None
 device_id = None
 
 def is_hassio():
-    # Home Assistant OS mounts /data and /config in add-ons
-    return os.path.exists("/data") and os.path.exists("/config")
+    return (
+        os.environ.get("SUPERVISOR_TOKEN") is not None or
+        os.path.exists("/data") and os.path.exists("/config")
+    )
 
 
 # Set the file path based on the environment (Windows vs Docker)

@@ -1,7 +1,8 @@
 name: "Teison EV Charger Control"
-version: "1.0.27"
+version: "1.0.28"
 slug: "teison_ev_charger"
 description: "Control a Teison EV Charger via cloud API"
+hassio_api: true
 startup: "application"
 boot: "auto"
 arch:
