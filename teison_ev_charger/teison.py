@@ -47,8 +47,11 @@ device_id = None
 
 # Check if the script is running in Docker
 def is_docker():
-    # Check if Docker-related environment variables are present
-    return os.path.exists('/.dockerenv')
+    # Check for Docker environment variable indicating a containerized environment
+    if 'DOCKER' in os.environ.get('PATH', '') or '/docker' in os.environ.get('HOME', '') or os.path.exists('/.dockerenv'):
+        return True
+    return False
+
 
 # Set the file path based on the environment (Windows vs Docker)
 if is_docker():
