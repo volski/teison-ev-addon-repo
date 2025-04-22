@@ -48,7 +48,7 @@ device_id = None
 def is_hassio():
     return (
         os.environ.get("SUPERVISOR_TOKEN") is not None or
-        os.path.exists("/data") and os.path.exists("/config")
+        os.path.exists("/assets")
     )
 
 
