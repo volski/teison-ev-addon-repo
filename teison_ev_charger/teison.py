@@ -45,9 +45,30 @@ pull_interval = config.get('pull_interval',10)
 token = None
 device_id = None
 
-with open("./data/currency.json", "r") as f:
-    data = json.load(f)
-    currency_list = data.get("currencyList", [])
+# Check if the script is running in Docker
+def is_docker():
+    # Check if Docker-related environment variables are present
+    return os.path.exists('/.dockerenv')
+
+# Set the file path based on the environment (Windows vs Docker)
+if is_docker():
+    # Absolute path in Docker container
+    config_path = "/data/currency.json"  # Adjust this to the path inside the container
+else:
+    # Relative path on Windows or local development environment
+    config_path = "./data/currency.json"  # Adjust this to the path on your host machine
+
+# Check if the file exists before opening
+if os.path.exists(config_path):
+    try:
+        with open(config_path, "r") as f:
+            data = json.load(f)
+            currency_list = data.get("currencyList", [])
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON: {e}")
+else:
+    print(f"File not found: {config_path}")
+
 
 HEADERS = {
     "Authorization": f"Bearer {HA_TOKEN}",
