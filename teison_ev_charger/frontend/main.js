@@ -45975,31 +45975,32 @@ function getDeviceStatusColor(status) {
 }
 
 // src/app/components/device-list/device-list.component.ts
-function DeviceListComponent_tr_19_Template(rf, ctx) {
+var _c0 = (a0) => ({ color: a0 });
+function DeviceListComponent_tr_20_Template(rf, ctx) {
   if (rf & 1) {
     const _r1 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "tr", 4);
-    \u0275\u0275listener("click", function DeviceListComponent_tr_19_Template_tr_click_0_listener() {
+    \u0275\u0275elementStart(0, "tr", 8);
+    \u0275\u0275listener("click", function DeviceListComponent_tr_20_Template_tr_click_0_listener() {
       const device_r2 = \u0275\u0275restoreView(_r1).$implicit;
       const ctx_r2 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r2.viewDetails(device_r2.id));
     });
-    \u0275\u0275elementStart(1, "td");
+    \u0275\u0275elementStart(1, "td", 5);
     \u0275\u0275text(2);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(3, "td");
+    \u0275\u0275elementStart(3, "td", 5);
     \u0275\u0275text(4);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(5, "td");
+    \u0275\u0275elementStart(5, "td", 5);
     \u0275\u0275text(6);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(7, "td");
+    \u0275\u0275elementStart(7, "td", 5);
     \u0275\u0275text(8);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(9, "td")(10, "span");
+    \u0275\u0275elementStart(9, "td", 5)(10, "span", 9);
     \u0275\u0275text(11);
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(12, "td");
+    \u0275\u0275elementStart(12, "td", 5);
     \u0275\u0275text(13);
     \u0275\u0275elementEnd()();
   }
@@ -46015,7 +46016,7 @@ function DeviceListComponent_tr_19_Template(rf, ctx) {
     \u0275\u0275advance(2);
     \u0275\u0275textInterpolate(device_r2.chargePointVendor);
     \u0275\u0275advance(2);
-    \u0275\u0275styleProp("color", ctx_r2.getDeviceStatusColor(device_r2.connStatus));
+    \u0275\u0275property("ngStyle", \u0275\u0275pureFunction1(7, _c0, ctx_r2.getDeviceStatusColor(device_r2.connStatus)));
     \u0275\u0275advance();
     \u0275\u0275textInterpolate1(" ", ctx_r2.getDeviceStatus(device_r2.connStatus), " ");
     \u0275\u0275advance(2);
@@ -46043,43 +46044,43 @@ var DeviceListComponent = class _DeviceListComponent {
   static \u0275fac = function DeviceListComponent_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _DeviceListComponent)(\u0275\u0275directiveInject(HttpClient), \u0275\u0275directiveInject(Router));
   };
-  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _DeviceListComponent, selectors: [["app-device-list"]], decls: 20, vars: 1, consts: [[1, "device-list-container"], [1, "device-list-title"], [1, "device-table"], ["class", "device-row", 3, "click", 4, "ngFor", "ngForOf"], [1, "device-row", 3, "click"]], template: function DeviceListComponent_Template(rf, ctx) {
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _DeviceListComponent, selectors: [["app-device-list"]], decls: 21, vars: 1, consts: [[1, "p-6", "bg-white", "rounded-xl", "shadow-md"], [1, "text-2xl", "font-semibold", "text-gray-800", "mb-4"], [1, "overflow-x-auto"], [1, "min-w-full", "divide-y", "divide-gray-200", "text-sm", "text-left"], [1, "bg-gray-100", "text-gray-700", "uppercase", "tracking-wider"], [1, "px-4", "py-2"], [1, "divide-y", "divide-gray-100"], ["class", "hover:bg-gray-50 cursor-pointer", 3, "click", 4, "ngFor", "ngForOf"], [1, "hover:bg-gray-50", "cursor-pointer", 3, "click"], [3, "ngStyle"]], template: function DeviceListComponent_Template(rf, ctx) {
     if (rf & 1) {
       \u0275\u0275elementStart(0, "div", 0)(1, "h2", 1);
       \u0275\u0275text(2, "Device List");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(3, "table", 2)(4, "thead")(5, "tr")(6, "th");
-      \u0275\u0275text(7, "Name");
+      \u0275\u0275elementStart(3, "div", 2)(4, "table", 3)(5, "thead", 4)(6, "tr")(7, "th", 5);
+      \u0275\u0275text(8, "Name");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(8, "th");
-      \u0275\u0275text(9, "Model");
+      \u0275\u0275elementStart(9, "th", 5);
+      \u0275\u0275text(10, "Model");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(10, "th");
-      \u0275\u0275text(11, "Serial Number");
+      \u0275\u0275elementStart(11, "th", 5);
+      \u0275\u0275text(12, "Serial Number");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(12, "th");
-      \u0275\u0275text(13, "Vendor");
+      \u0275\u0275elementStart(13, "th", 5);
+      \u0275\u0275text(14, "Vendor");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(14, "th");
-      \u0275\u0275text(15, "Status");
+      \u0275\u0275elementStart(15, "th", 5);
+      \u0275\u0275text(16, "Status");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(16, "th");
-      \u0275\u0275text(17, "Firmware");
+      \u0275\u0275elementStart(17, "th", 5);
+      \u0275\u0275text(18, "Firmware");
       \u0275\u0275elementEnd()()();
-      \u0275\u0275elementStart(18, "tbody");
-      \u0275\u0275template(19, DeviceListComponent_tr_19_Template, 14, 8, "tr", 3);
-      \u0275\u0275elementEnd()()();
+      \u0275\u0275elementStart(19, "tbody", 6);
+      \u0275\u0275template(20, DeviceListComponent_tr_20_Template, 14, 9, "tr", 7);
+      \u0275\u0275elementEnd()()()();
     }
     if (rf & 2) {
-      \u0275\u0275advance(19);
+      \u0275\u0275advance(20);
       \u0275\u0275property("ngForOf", ctx.devices);
     }
-  }, dependencies: [CommonModule, NgForOf, HttpClientModule], styles: ['\n\n.device-list-container[_ngcontent-%COMP%] {\n  width: 100%;\n  max-width: 900px;\n  margin: 30px auto;\n  padding: 20px;\n  border-radius: 8px;\n  background-color: #f4f7fc;\n  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);\n}\n.device-list-title[_ngcontent-%COMP%] {\n  text-align: center;\n  font-family: "Arial", sans-serif;\n  color: #333;\n  margin-bottom: 20px;\n  font-size: 24px;\n}\n.device-table[_ngcontent-%COMP%] {\n  width: 100%;\n  border-collapse: collapse;\n  margin-top: 20px;\n}\n.device-table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%], \n.device-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%] {\n  padding: 12px;\n  text-align: left;\n  font-size: 16px;\n}\n.device-table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%] {\n  background-color: #4c9bff;\n  color: white;\n  border-top-left-radius: 8px;\n  border-top-right-radius: 8px;\n}\n.device-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%] {\n  background-color: #ffffff;\n  border-bottom: 1px solid #ddd;\n}\n.device-table[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:nth-child(even) {\n  background-color: #f9f9f9;\n}\n.device-table[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:hover {\n  background-color: #f1f1f1;\n  cursor: pointer;\n}\n.device-row[_ngcontent-%COMP%]:hover {\n  background-color: #e6f7ff;\n}\n.device-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  font-weight: bold;\n  text-transform: capitalize;\n}\n@media screen and (max-width: 768px) {\n  .device-table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%], \n   .device-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%] {\n    padding: 8px;\n    font-size: 14px;\n  }\n}\n/*# sourceMappingURL=device-list.component.css.map */'] });
+  }, dependencies: [CommonModule, NgForOf, NgStyle, HttpClientModule], styles: ['\n\n.device-list-container[_ngcontent-%COMP%] {\n  width: 100%;\n  max-width: 900px;\n  margin: 30px auto;\n  padding: 20px;\n  border-radius: 8px;\n  background-color: #f4f7fc;\n  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);\n}\n.device-list-title[_ngcontent-%COMP%] {\n  text-align: center;\n  font-family: "Arial", sans-serif;\n  color: #333;\n  margin-bottom: 20px;\n  font-size: 24px;\n}\n.device-table[_ngcontent-%COMP%] {\n  width: 100%;\n  border-collapse: collapse;\n  margin-top: 20px;\n}\n.device-table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%], \n.device-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%] {\n  padding: 12px;\n  text-align: left;\n  font-size: 16px;\n}\n.device-table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%] {\n  background-color: #4c9bff;\n  color: white;\n  border-top-left-radius: 8px;\n  border-top-right-radius: 8px;\n}\n.device-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%] {\n  background-color: #ffffff;\n  border-bottom: 1px solid #ddd;\n}\n.device-table[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:nth-child(even) {\n  background-color: #f9f9f9;\n}\n.device-table[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:hover {\n  background-color: #f1f1f1;\n  cursor: pointer;\n}\n.device-row[_ngcontent-%COMP%]:hover {\n  background-color: #e6f7ff;\n}\n.device-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  font-weight: bold;\n  text-transform: capitalize;\n}\n@media screen and (max-width: 768px) {\n  .device-table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%], \n   .device-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%] {\n    padding: 8px;\n    font-size: 14px;\n  }\n}\n/*# sourceMappingURL=device-list.component.css.map */'] });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(DeviceListComponent, [{
     type: Component,
-    args: [{ selector: "app-device-list", standalone: true, imports: [CommonModule, HttpClientModule], template: '<div class="device-list-container">\r\n  <h2 class="device-list-title">Device List</h2>\r\n  <table class="device-table">\r\n    <thead>\r\n    <tr>\r\n      <th>Name</th>\r\n      <th>Model</th>\r\n      <th>Serial Number</th>\r\n      <th>Vendor</th>\r\n      <th>Status</th>\r\n      <th>Firmware</th>\r\n    </tr>\r\n    </thead>\r\n    <tbody>\r\n    <tr *ngFor="let device of devices" (click)="viewDetails(device.id)" class="device-row">\r\n      <td>{{ device.pileName }}</td>\r\n      <td>{{ device.chargePointModel }}</td>\r\n      <td>{{ device.chargePointSerialNumber }}</td>\r\n      <td>{{ device.chargePointVendor }}</td>\r\n      <td>\r\n          <span [style.color]="getDeviceStatusColor(device.connStatus)">\r\n            {{ getDeviceStatus(device.connStatus) }}\r\n          </span>\r\n      </td>\r\n      <td>{{ device.firmwareVersion }}</td>\r\n    </tr>\r\n    </tbody>\r\n  </table>\r\n</div>\r\n', styles: ['/* src/app/components/device-list/device-list.component.css */\n.device-list-container {\n  width: 100%;\n  max-width: 900px;\n  margin: 30px auto;\n  padding: 20px;\n  border-radius: 8px;\n  background-color: #f4f7fc;\n  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);\n}\n.device-list-title {\n  text-align: center;\n  font-family: "Arial", sans-serif;\n  color: #333;\n  margin-bottom: 20px;\n  font-size: 24px;\n}\n.device-table {\n  width: 100%;\n  border-collapse: collapse;\n  margin-top: 20px;\n}\n.device-table th,\n.device-table td {\n  padding: 12px;\n  text-align: left;\n  font-size: 16px;\n}\n.device-table th {\n  background-color: #4c9bff;\n  color: white;\n  border-top-left-radius: 8px;\n  border-top-right-radius: 8px;\n}\n.device-table td {\n  background-color: #ffffff;\n  border-bottom: 1px solid #ddd;\n}\n.device-table tr:nth-child(even) {\n  background-color: #f9f9f9;\n}\n.device-table tr:hover {\n  background-color: #f1f1f1;\n  cursor: pointer;\n}\n.device-row:hover {\n  background-color: #e6f7ff;\n}\n.device-table td span {\n  font-weight: bold;\n  text-transform: capitalize;\n}\n@media screen and (max-width: 768px) {\n  .device-table th,\n  .device-table td {\n    padding: 8px;\n    font-size: 14px;\n  }\n}\n/*# sourceMappingURL=device-list.component.css.map */\n'] }]
+    args: [{ selector: "app-device-list", standalone: true, imports: [CommonModule, HttpClientModule], template: '<div class="p-6 bg-white rounded-xl shadow-md">\r\n  <h2 class="text-2xl font-semibold text-gray-800 mb-4">Device List</h2>\r\n\r\n  <div class="overflow-x-auto">\r\n    <table class="min-w-full divide-y divide-gray-200 text-sm text-left">\r\n      <thead class="bg-gray-100 text-gray-700 uppercase tracking-wider">\r\n        <tr>\r\n          <th class="px-4 py-2">Name</th>\r\n          <th class="px-4 py-2">Model</th>\r\n          <th class="px-4 py-2">Serial Number</th>\r\n          <th class="px-4 py-2">Vendor</th>\r\n          <th class="px-4 py-2">Status</th>\r\n          <th class="px-4 py-2">Firmware</th>\r\n        </tr>\r\n      </thead>\r\n      <tbody class="divide-y divide-gray-100">\r\n        <tr *ngFor="let device of devices"\r\n            (click)="viewDetails(device.id)"\r\n            class="hover:bg-gray-50 cursor-pointer">\r\n          <td class="px-4 py-2">{{ device.pileName }}</td>\r\n          <td class="px-4 py-2">{{ device.chargePointModel }}</td>\r\n          <td class="px-4 py-2">{{ device.chargePointSerialNumber }}</td>\r\n          <td class="px-4 py-2">{{ device.chargePointVendor }}</td>\r\n          <td class="px-4 py-2">\r\n            <span [ngStyle]="{ color: getDeviceStatusColor(device.connStatus) }">\r\n              {{ getDeviceStatus(device.connStatus) }}\r\n            </span>\r\n          </td>\r\n          <td class="px-4 py-2">{{ device.firmwareVersion }}</td>\r\n        </tr>\r\n      </tbody>\r\n    </table>\r\n  </div>\r\n</div>\r\n', styles: ['/* src/app/components/device-list/device-list.component.css */\n.device-list-container {\n  width: 100%;\n  max-width: 900px;\n  margin: 30px auto;\n  padding: 20px;\n  border-radius: 8px;\n  background-color: #f4f7fc;\n  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);\n}\n.device-list-title {\n  text-align: center;\n  font-family: "Arial", sans-serif;\n  color: #333;\n  margin-bottom: 20px;\n  font-size: 24px;\n}\n.device-table {\n  width: 100%;\n  border-collapse: collapse;\n  margin-top: 20px;\n}\n.device-table th,\n.device-table td {\n  padding: 12px;\n  text-align: left;\n  font-size: 16px;\n}\n.device-table th {\n  background-color: #4c9bff;\n  color: white;\n  border-top-left-radius: 8px;\n  border-top-right-radius: 8px;\n}\n.device-table td {\n  background-color: #ffffff;\n  border-bottom: 1px solid #ddd;\n}\n.device-table tr:nth-child(even) {\n  background-color: #f9f9f9;\n}\n.device-table tr:hover {\n  background-color: #f1f1f1;\n  cursor: pointer;\n}\n.device-row:hover {\n  background-color: #e6f7ff;\n}\n.device-table td span {\n  font-weight: bold;\n  text-transform: capitalize;\n}\n@media screen and (max-width: 768px) {\n  .device-table th,\n  .device-table td {\n    padding: 8px;\n    font-size: 14px;\n  }\n}\n/*# sourceMappingURL=device-list.component.css.map */\n'] }]
   }], () => [{ type: HttpClient }, { type: Router }], null);
 })();
 (() => {
@@ -62745,7 +62746,7 @@ var _StructuralStylesLoader = class __StructuralStylesLoader {
 })();
 
 // node_modules/@angular/material/fesm2022/icon-button-BUs2uBU3.mjs
-var _c0 = ["mat-icon-button", ""];
+var _c02 = ["mat-icon-button", ""];
 var _c1 = ["*"];
 var _c2 = '.mat-mdc-icon-button{-webkit-user-select:none;user-select:none;display:inline-block;position:relative;box-sizing:border-box;border:none;outline:none;background-color:rgba(0,0,0,0);fill:currentColor;color:inherit;text-decoration:none;cursor:pointer;z-index:0;overflow:visible;border-radius:50%;flex-shrink:0;text-align:center;width:var(--mdc-icon-button-state-layer-size, 40px);height:var(--mdc-icon-button-state-layer-size, 40px);padding:calc(calc(var(--mdc-icon-button-state-layer-size, 40px) - var(--mdc-icon-button-icon-size, 24px)) / 2);font-size:var(--mdc-icon-button-icon-size, 24px);color:var(--mdc-icon-button-icon-color, var(--mat-sys-on-surface-variant));-webkit-tap-highlight-color:rgba(0,0,0,0)}.mat-mdc-icon-button .mat-mdc-button-ripple,.mat-mdc-icon-button .mat-mdc-button-persistent-ripple,.mat-mdc-icon-button .mat-mdc-button-persistent-ripple::before{top:0;left:0;right:0;bottom:0;position:absolute;pointer-events:none;border-radius:inherit}.mat-mdc-icon-button .mat-mdc-button-ripple{overflow:hidden}.mat-mdc-icon-button .mat-mdc-button-persistent-ripple::before{content:"";opacity:0}.mat-mdc-icon-button .mdc-button__label,.mat-mdc-icon-button .mat-icon{z-index:1;position:relative}.mat-mdc-icon-button .mat-focus-indicator{top:0;left:0;right:0;bottom:0;position:absolute}.mat-mdc-icon-button:focus>.mat-focus-indicator::before{content:""}.mat-mdc-icon-button .mat-ripple-element{background-color:var(--mat-icon-button-ripple-color, color-mix(in srgb, var(--mat-sys-on-surface-variant) calc(var(--mat-sys-pressed-state-layer-opacity) * 100%), transparent))}.mat-mdc-icon-button .mat-mdc-button-persistent-ripple::before{background-color:var(--mat-icon-button-state-layer-color, var(--mat-sys-on-surface-variant))}.mat-mdc-icon-button.mat-mdc-button-disabled .mat-mdc-button-persistent-ripple::before{background-color:var(--mat-icon-button-disabled-state-layer-color, var(--mat-sys-on-surface-variant))}.mat-mdc-icon-button:hover>.mat-mdc-button-persistent-ripple::before{opacity:var(--mat-icon-button-hover-state-layer-opacity, var(--mat-sys-hover-state-layer-opacity))}.mat-mdc-icon-button.cdk-program-focused>.mat-mdc-button-persistent-ripple::before,.mat-mdc-icon-button.cdk-keyboard-focused>.mat-mdc-button-persistent-ripple::before,.mat-mdc-icon-button.mat-mdc-button-disabled-interactive:focus>.mat-mdc-button-persistent-ripple::before{opacity:var(--mat-icon-button-focus-state-layer-opacity, var(--mat-sys-focus-state-layer-opacity))}.mat-mdc-icon-button:active>.mat-mdc-button-persistent-ripple::before{opacity:var(--mat-icon-button-pressed-state-layer-opacity, var(--mat-sys-pressed-state-layer-opacity))}.mat-mdc-icon-button .mat-mdc-button-touch-target{position:absolute;top:50%;height:48px;left:50%;width:48px;transform:translate(-50%, -50%);display:var(--mat-icon-button-touch-target-display, block)}.mat-mdc-icon-button._mat-animation-noopable{transition:none !important;animation:none !important}.mat-mdc-icon-button[disabled],.mat-mdc-icon-button.mat-mdc-button-disabled{cursor:default;pointer-events:none;color:var(--mdc-icon-button-disabled-icon-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent))}.mat-mdc-icon-button.mat-mdc-button-disabled-interactive{pointer-events:auto}.mat-mdc-icon-button img,.mat-mdc-icon-button svg{width:var(--mdc-icon-button-icon-size, 24px);height:var(--mdc-icon-button-icon-size, 24px);vertical-align:baseline}.mat-mdc-icon-button .mat-mdc-button-persistent-ripple{border-radius:50%}.mat-mdc-icon-button[hidden]{display:none}.mat-mdc-icon-button.mat-unthemed:not(.mdc-ripple-upgraded):focus::before,.mat-mdc-icon-button.mat-primary:not(.mdc-ripple-upgraded):focus::before,.mat-mdc-icon-button.mat-accent:not(.mdc-ripple-upgraded):focus::before,.mat-mdc-icon-button.mat-warn:not(.mdc-ripple-upgraded):focus::before{background:rgba(0,0,0,0);opacity:1}\n';
 var _c3 = "@media(forced-colors: active){.mat-mdc-button:not(.mdc-button--outlined),.mat-mdc-unelevated-button:not(.mdc-button--outlined),.mat-mdc-raised-button:not(.mdc-button--outlined),.mat-mdc-outlined-button:not(.mdc-button--outlined),.mat-mdc-icon-button.mat-mdc-icon-button,.mat-mdc-outlined-button .mdc-button__ripple{outline:solid 1px}}\n";
@@ -63038,7 +63039,7 @@ var MatIconButton = class _MatIconButton extends MatButtonBase {
     },
     exportAs: ["matButton"],
     features: [\u0275\u0275InheritDefinitionFeature],
-    attrs: _c0,
+    attrs: _c02,
     ngContentSelectors: _c1,
     decls: 4,
     vars: 0,
@@ -63101,7 +63102,7 @@ var MatIconAnchor = class _MatIconAnchor extends MatAnchorBase {
     },
     exportAs: ["matButton", "matAnchor"],
     features: [\u0275\u0275InheritDefinitionFeature],
-    attrs: _c0,
+    attrs: _c02,
     ngContentSelectors: _c1,
     decls: 4,
     vars: 0,
@@ -63350,7 +63351,7 @@ var MatRippleModule = class _MatRippleModule {
 })();
 
 // node_modules/@angular/material/fesm2022/button.mjs
-var _c02 = ["mat-button", ""];
+var _c03 = ["mat-button", ""];
 var _c12 = [[["", 8, "material-icons", 3, "iconPositionEnd", ""], ["mat-icon", 3, "iconPositionEnd", ""], ["", "matButtonIcon", "", 3, "iconPositionEnd", ""]], "*", [["", "iconPositionEnd", "", 8, "material-icons"], ["mat-icon", "iconPositionEnd", ""], ["", "matButtonIcon", "", "iconPositionEnd", ""]]];
 var _c22 = [".material-icons:not([iconPositionEnd]), mat-icon:not([iconPositionEnd]), [matButtonIcon]:not([iconPositionEnd])", "*", ".material-icons[iconPositionEnd], mat-icon[iconPositionEnd], [matButtonIcon][iconPositionEnd]"];
 var _c32 = '.mat-mdc-button-base{text-decoration:none}.mdc-button{-webkit-user-select:none;user-select:none;position:relative;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;min-width:64px;border:none;outline:none;line-height:inherit;-webkit-appearance:none;overflow:visible;vertical-align:middle;background:rgba(0,0,0,0);padding:0 8px}.mdc-button::-moz-focus-inner{padding:0;border:0}.mdc-button:active{outline:none}.mdc-button:hover{cursor:pointer}.mdc-button:disabled{cursor:default;pointer-events:none}.mdc-button[hidden]{display:none}.mdc-button .mdc-button__label{position:relative}.mat-mdc-button{padding:0 var(--mat-text-button-horizontal-padding, 12px);height:var(--mdc-text-button-container-height, 40px);font-family:var(--mdc-text-button-label-text-font, var(--mat-sys-label-large-font));font-size:var(--mdc-text-button-label-text-size, var(--mat-sys-label-large-size));letter-spacing:var(--mdc-text-button-label-text-tracking, var(--mat-sys-label-large-tracking));text-transform:var(--mdc-text-button-label-text-transform);font-weight:var(--mdc-text-button-label-text-weight, var(--mat-sys-label-large-weight))}.mat-mdc-button,.mat-mdc-button .mdc-button__ripple{border-radius:var(--mdc-text-button-container-shape, var(--mat-sys-corner-full))}.mat-mdc-button:not(:disabled){color:var(--mdc-text-button-label-text-color, var(--mat-sys-primary))}.mat-mdc-button[disabled],.mat-mdc-button.mat-mdc-button-disabled{cursor:default;pointer-events:none;color:var(--mdc-text-button-disabled-label-text-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent))}.mat-mdc-button.mat-mdc-button-disabled-interactive{pointer-events:auto}.mat-mdc-button:has(.material-icons,mat-icon,[matButtonIcon]){padding:0 var(--mat-text-button-with-icon-horizontal-padding, 16px)}.mat-mdc-button>.mat-icon{margin-right:var(--mat-text-button-icon-spacing, 8px);margin-left:var(--mat-text-button-icon-offset, -4px)}[dir=rtl] .mat-mdc-button>.mat-icon{margin-right:var(--mat-text-button-icon-offset, -4px);margin-left:var(--mat-text-button-icon-spacing, 8px)}.mat-mdc-button .mdc-button__label+.mat-icon{margin-right:var(--mat-text-button-icon-offset, -4px);margin-left:var(--mat-text-button-icon-spacing, 8px)}[dir=rtl] .mat-mdc-button .mdc-button__label+.mat-icon{margin-right:var(--mat-text-button-icon-spacing, 8px);margin-left:var(--mat-text-button-icon-offset, -4px)}.mat-mdc-button .mat-ripple-element{background-color:var(--mat-text-button-ripple-color, color-mix(in srgb, var(--mat-sys-primary) calc(var(--mat-sys-pressed-state-layer-opacity) * 100%), transparent))}.mat-mdc-button .mat-mdc-button-persistent-ripple::before{background-color:var(--mat-text-button-state-layer-color, var(--mat-sys-primary))}.mat-mdc-button.mat-mdc-button-disabled .mat-mdc-button-persistent-ripple::before{background-color:var(--mat-text-button-disabled-state-layer-color, var(--mat-sys-on-surface-variant))}.mat-mdc-button:hover>.mat-mdc-button-persistent-ripple::before{opacity:var(--mat-text-button-hover-state-layer-opacity, var(--mat-sys-hover-state-layer-opacity))}.mat-mdc-button.cdk-program-focused>.mat-mdc-button-persistent-ripple::before,.mat-mdc-button.cdk-keyboard-focused>.mat-mdc-button-persistent-ripple::before,.mat-mdc-button.mat-mdc-button-disabled-interactive:focus>.mat-mdc-button-persistent-ripple::before{opacity:var(--mat-text-button-focus-state-layer-opacity, var(--mat-sys-focus-state-layer-opacity))}.mat-mdc-button:active>.mat-mdc-button-persistent-ripple::before{opacity:var(--mat-text-button-pressed-state-layer-opacity, var(--mat-sys-pressed-state-layer-opacity))}.mat-mdc-button .mat-mdc-button-touch-target{position:absolute;top:50%;height:48px;left:0;right:0;transform:translateY(-50%);display:var(--mat-text-button-touch-target-display, block)}.mat-mdc-unelevated-button{transition:box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);height:var(--mdc-filled-button-container-height, 40px);font-family:var(--mdc-filled-button-label-text-font, var(--mat-sys-label-large-font));font-size:var(--mdc-filled-button-label-text-size, var(--mat-sys-label-large-size));letter-spacing:var(--mdc-filled-button-label-text-tracking, var(--mat-sys-label-large-tracking));text-transform:var(--mdc-filled-button-label-text-transform);font-weight:var(--mdc-filled-button-label-text-weight, var(--mat-sys-label-large-weight));padding:0 var(--mat-filled-button-horizontal-padding, 24px)}.mat-mdc-unelevated-button>.mat-icon{margin-right:var(--mat-filled-button-icon-spacing, 8px);margin-left:var(--mat-filled-button-icon-offset, -8px)}[dir=rtl] .mat-mdc-unelevated-button>.mat-icon{margin-right:var(--mat-filled-button-icon-offset, -8px);margin-left:var(--mat-filled-button-icon-spacing, 8px)}.mat-mdc-unelevated-button .mdc-button__label+.mat-icon{margin-right:var(--mat-filled-button-icon-offset, -8px);margin-left:var(--mat-filled-button-icon-spacing, 8px)}[dir=rtl] .mat-mdc-unelevated-button .mdc-button__label+.mat-icon{margin-right:var(--mat-filled-button-icon-spacing, 8px);margin-left:var(--mat-filled-button-icon-offset, -8px)}.mat-mdc-unelevated-button .mat-ripple-element{background-color:var(--mat-filled-button-ripple-color, color-mix(in srgb, var(--mat-sys-on-primary) calc(var(--mat-sys-pressed-state-layer-opacity) * 100%), transparent))}.mat-mdc-unelevated-button .mat-mdc-button-persistent-ripple::before{background-color:var(--mat-filled-button-state-layer-color, var(--mat-sys-on-primary))}.mat-mdc-unelevated-button.mat-mdc-button-disabled .mat-mdc-button-persistent-ripple::before{background-color:var(--mat-filled-button-disabled-state-layer-color, var(--mat-sys-on-surface-variant))}.mat-mdc-unelevated-button:hover>.mat-mdc-button-persistent-ripple::before{opacity:var(--mat-filled-button-hover-state-layer-opacity, var(--mat-sys-hover-state-layer-opacity))}.mat-mdc-unelevated-button.cdk-program-focused>.mat-mdc-button-persistent-ripple::before,.mat-mdc-unelevated-button.cdk-keyboard-focused>.mat-mdc-button-persistent-ripple::before,.mat-mdc-unelevated-button.mat-mdc-button-disabled-interactive:focus>.mat-mdc-button-persistent-ripple::before{opacity:var(--mat-filled-button-focus-state-layer-opacity, var(--mat-sys-focus-state-layer-opacity))}.mat-mdc-unelevated-button:active>.mat-mdc-button-persistent-ripple::before{opacity:var(--mat-filled-button-pressed-state-layer-opacity, var(--mat-sys-pressed-state-layer-opacity))}.mat-mdc-unelevated-button .mat-mdc-button-touch-target{position:absolute;top:50%;height:48px;left:0;right:0;transform:translateY(-50%);display:var(--mat-filled-button-touch-target-display, block)}.mat-mdc-unelevated-button:not(:disabled){color:var(--mdc-filled-button-label-text-color, var(--mat-sys-on-primary));background-color:var(--mdc-filled-button-container-color, var(--mat-sys-primary))}.mat-mdc-unelevated-button,.mat-mdc-unelevated-button .mdc-button__ripple{border-radius:var(--mdc-filled-button-container-shape, var(--mat-sys-corner-full))}.mat-mdc-unelevated-button[disabled],.mat-mdc-unelevated-button.mat-mdc-button-disabled{cursor:default;pointer-events:none;color:var(--mdc-filled-button-disabled-label-text-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent));background-color:var(--mdc-filled-button-disabled-container-color, color-mix(in srgb, var(--mat-sys-on-surface) 12%, transparent))}.mat-mdc-unelevated-button.mat-mdc-button-disabled-interactive{pointer-events:auto}.mat-mdc-raised-button{transition:box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);box-shadow:var(--mdc-protected-button-container-elevation-shadow, var(--mat-sys-level1));height:var(--mdc-protected-button-container-height, 40px);font-family:var(--mdc-protected-button-label-text-font, var(--mat-sys-label-large-font));font-size:var(--mdc-protected-button-label-text-size, var(--mat-sys-label-large-size));letter-spacing:var(--mdc-protected-button-label-text-tracking, var(--mat-sys-label-large-tracking));text-transform:var(--mdc-protected-button-label-text-transform);font-weight:var(--mdc-protected-button-label-text-weight, var(--mat-sys-label-large-weight));padding:0 var(--mat-protected-button-horizontal-padding, 24px)}.mat-mdc-raised-button>.mat-icon{margin-right:var(--mat-protected-button-icon-spacing, 8px);margin-left:var(--mat-protected-button-icon-offset, -8px)}[dir=rtl] .mat-mdc-raised-button>.mat-icon{margin-right:var(--mat-protected-button-icon-offset, -8px);margin-left:var(--mat-protected-button-icon-spacing, 8px)}.mat-mdc-raised-button .mdc-button__label+.mat-icon{margin-right:var(--mat-protected-button-icon-offset, -8px);margin-left:var(--mat-protected-button-icon-spacing, 8px)}[dir=rtl] .mat-mdc-raised-button .mdc-button__label+.mat-icon{margin-right:var(--mat-protected-button-icon-spacing, 8px);margin-left:var(--mat-protected-button-icon-offset, -8px)}.mat-mdc-raised-button .mat-ripple-element{background-color:var(--mat-protected-button-ripple-color, color-mix(in srgb, var(--mat-sys-primary) calc(var(--mat-sys-pressed-state-layer-opacity) * 100%), transparent))}.mat-mdc-raised-button .mat-mdc-button-persistent-ripple::before{background-color:var(--mat-protected-button-state-layer-color, var(--mat-sys-primary))}.mat-mdc-raised-button.mat-mdc-button-disabled .mat-mdc-button-persistent-ripple::before{background-color:var(--mat-protected-button-disabled-state-layer-color, var(--mat-sys-on-surface-variant))}.mat-mdc-raised-button:hover>.mat-mdc-button-persistent-ripple::before{opacity:var(--mat-protected-button-hover-state-layer-opacity, var(--mat-sys-hover-state-layer-opacity))}.mat-mdc-raised-button.cdk-program-focused>.mat-mdc-button-persistent-ripple::before,.mat-mdc-raised-button.cdk-keyboard-focused>.mat-mdc-button-persistent-ripple::before,.mat-mdc-raised-button.mat-mdc-button-disabled-interactive:focus>.mat-mdc-button-persistent-ripple::before{opacity:var(--mat-protected-button-focus-state-layer-opacity, var(--mat-sys-focus-state-layer-opacity))}.mat-mdc-raised-button:active>.mat-mdc-button-persistent-ripple::before{opacity:var(--mat-protected-button-pressed-state-layer-opacity, var(--mat-sys-pressed-state-layer-opacity))}.mat-mdc-raised-button .mat-mdc-button-touch-target{position:absolute;top:50%;height:48px;left:0;right:0;transform:translateY(-50%);display:var(--mat-protected-button-touch-target-display, block)}.mat-mdc-raised-button:not(:disabled){color:var(--mdc-protected-button-label-text-color, var(--mat-sys-primary));background-color:var(--mdc-protected-button-container-color, var(--mat-sys-surface))}.mat-mdc-raised-button,.mat-mdc-raised-button .mdc-button__ripple{border-radius:var(--mdc-protected-button-container-shape, var(--mat-sys-corner-full))}.mat-mdc-raised-button:hover{box-shadow:var(--mdc-protected-button-hover-container-elevation-shadow, var(--mat-sys-level2))}.mat-mdc-raised-button:focus{box-shadow:var(--mdc-protected-button-focus-container-elevation-shadow, var(--mat-sys-level1))}.mat-mdc-raised-button:active,.mat-mdc-raised-button:focus:active{box-shadow:var(--mdc-protected-button-pressed-container-elevation-shadow, var(--mat-sys-level1))}.mat-mdc-raised-button[disabled],.mat-mdc-raised-button.mat-mdc-button-disabled{cursor:default;pointer-events:none;color:var(--mdc-protected-button-disabled-label-text-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent));background-color:var(--mdc-protected-button-disabled-container-color, color-mix(in srgb, var(--mat-sys-on-surface) 12%, transparent))}.mat-mdc-raised-button[disabled].mat-mdc-button-disabled,.mat-mdc-raised-button.mat-mdc-button-disabled.mat-mdc-button-disabled{box-shadow:var(--mdc-protected-button-disabled-container-elevation-shadow, var(--mat-sys-level0))}.mat-mdc-raised-button.mat-mdc-button-disabled-interactive{pointer-events:auto}.mat-mdc-outlined-button{border-style:solid;transition:border 280ms cubic-bezier(0.4, 0, 0.2, 1);height:var(--mdc-outlined-button-container-height, 40px);font-family:var(--mdc-outlined-button-label-text-font, var(--mat-sys-label-large-font));font-size:var(--mdc-outlined-button-label-text-size, var(--mat-sys-label-large-size));letter-spacing:var(--mdc-outlined-button-label-text-tracking, var(--mat-sys-label-large-tracking));text-transform:var(--mdc-outlined-button-label-text-transform);font-weight:var(--mdc-outlined-button-label-text-weight, var(--mat-sys-label-large-weight));border-radius:var(--mdc-outlined-button-container-shape, var(--mat-sys-corner-full));border-width:var(--mdc-outlined-button-outline-width, 1px);padding:0 var(--mat-outlined-button-horizontal-padding, 24px)}.mat-mdc-outlined-button>.mat-icon{margin-right:var(--mat-outlined-button-icon-spacing, 8px);margin-left:var(--mat-outlined-button-icon-offset, -8px)}[dir=rtl] .mat-mdc-outlined-button>.mat-icon{margin-right:var(--mat-outlined-button-icon-offset, -8px);margin-left:var(--mat-outlined-button-icon-spacing, 8px)}.mat-mdc-outlined-button .mdc-button__label+.mat-icon{margin-right:var(--mat-outlined-button-icon-offset, -8px);margin-left:var(--mat-outlined-button-icon-spacing, 8px)}[dir=rtl] .mat-mdc-outlined-button .mdc-button__label+.mat-icon{margin-right:var(--mat-outlined-button-icon-spacing, 8px);margin-left:var(--mat-outlined-button-icon-offset, -8px)}.mat-mdc-outlined-button .mat-ripple-element{background-color:var(--mat-outlined-button-ripple-color, color-mix(in srgb, var(--mat-sys-primary) calc(var(--mat-sys-pressed-state-layer-opacity) * 100%), transparent))}.mat-mdc-outlined-button .mat-mdc-button-persistent-ripple::before{background-color:var(--mat-outlined-button-state-layer-color, var(--mat-sys-primary))}.mat-mdc-outlined-button.mat-mdc-button-disabled .mat-mdc-button-persistent-ripple::before{background-color:var(--mat-outlined-button-disabled-state-layer-color, var(--mat-sys-on-surface-variant))}.mat-mdc-outlined-button:hover>.mat-mdc-button-persistent-ripple::before{opacity:var(--mat-outlined-button-hover-state-layer-opacity, var(--mat-sys-hover-state-layer-opacity))}.mat-mdc-outlined-button.cdk-program-focused>.mat-mdc-button-persistent-ripple::before,.mat-mdc-outlined-button.cdk-keyboard-focused>.mat-mdc-button-persistent-ripple::before,.mat-mdc-outlined-button.mat-mdc-button-disabled-interactive:focus>.mat-mdc-button-persistent-ripple::before{opacity:var(--mat-outlined-button-focus-state-layer-opacity, var(--mat-sys-focus-state-layer-opacity))}.mat-mdc-outlined-button:active>.mat-mdc-button-persistent-ripple::before{opacity:var(--mat-outlined-button-pressed-state-layer-opacity, var(--mat-sys-pressed-state-layer-opacity))}.mat-mdc-outlined-button .mat-mdc-button-touch-target{position:absolute;top:50%;height:48px;left:0;right:0;transform:translateY(-50%);display:var(--mat-outlined-button-touch-target-display, block)}.mat-mdc-outlined-button:not(:disabled){color:var(--mdc-outlined-button-label-text-color, var(--mat-sys-primary));border-color:var(--mdc-outlined-button-outline-color, var(--mat-sys-outline))}.mat-mdc-outlined-button[disabled],.mat-mdc-outlined-button.mat-mdc-button-disabled{cursor:default;pointer-events:none;color:var(--mdc-outlined-button-disabled-label-text-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent));border-color:var(--mdc-outlined-button-disabled-outline-color, color-mix(in srgb, var(--mat-sys-on-surface) 12%, transparent))}.mat-mdc-outlined-button.mat-mdc-button-disabled-interactive{pointer-events:auto}.mat-mdc-button,.mat-mdc-unelevated-button,.mat-mdc-raised-button,.mat-mdc-outlined-button{-webkit-tap-highlight-color:rgba(0,0,0,0)}.mat-mdc-button .mat-mdc-button-ripple,.mat-mdc-button .mat-mdc-button-persistent-ripple,.mat-mdc-button .mat-mdc-button-persistent-ripple::before,.mat-mdc-unelevated-button .mat-mdc-button-ripple,.mat-mdc-unelevated-button .mat-mdc-button-persistent-ripple,.mat-mdc-unelevated-button .mat-mdc-button-persistent-ripple::before,.mat-mdc-raised-button .mat-mdc-button-ripple,.mat-mdc-raised-button .mat-mdc-button-persistent-ripple,.mat-mdc-raised-button .mat-mdc-button-persistent-ripple::before,.mat-mdc-outlined-button .mat-mdc-button-ripple,.mat-mdc-outlined-button .mat-mdc-button-persistent-ripple,.mat-mdc-outlined-button .mat-mdc-button-persistent-ripple::before{top:0;left:0;right:0;bottom:0;position:absolute;pointer-events:none;border-radius:inherit}.mat-mdc-button .mat-mdc-button-ripple,.mat-mdc-unelevated-button .mat-mdc-button-ripple,.mat-mdc-raised-button .mat-mdc-button-ripple,.mat-mdc-outlined-button .mat-mdc-button-ripple{overflow:hidden}.mat-mdc-button .mat-mdc-button-persistent-ripple::before,.mat-mdc-unelevated-button .mat-mdc-button-persistent-ripple::before,.mat-mdc-raised-button .mat-mdc-button-persistent-ripple::before,.mat-mdc-outlined-button .mat-mdc-button-persistent-ripple::before{content:"";opacity:0}.mat-mdc-button .mdc-button__label,.mat-mdc-button .mat-icon,.mat-mdc-unelevated-button .mdc-button__label,.mat-mdc-unelevated-button .mat-icon,.mat-mdc-raised-button .mdc-button__label,.mat-mdc-raised-button .mat-icon,.mat-mdc-outlined-button .mdc-button__label,.mat-mdc-outlined-button .mat-icon{z-index:1;position:relative}.mat-mdc-button .mat-focus-indicator,.mat-mdc-unelevated-button .mat-focus-indicator,.mat-mdc-raised-button .mat-focus-indicator,.mat-mdc-outlined-button .mat-focus-indicator{top:0;left:0;right:0;bottom:0;position:absolute}.mat-mdc-button:focus>.mat-focus-indicator::before,.mat-mdc-unelevated-button:focus>.mat-focus-indicator::before,.mat-mdc-raised-button:focus>.mat-focus-indicator::before,.mat-mdc-outlined-button:focus>.mat-focus-indicator::before{content:""}.mat-mdc-button._mat-animation-noopable,.mat-mdc-unelevated-button._mat-animation-noopable,.mat-mdc-raised-button._mat-animation-noopable,.mat-mdc-outlined-button._mat-animation-noopable{transition:none !important;animation:none !important}.mat-mdc-button>.mat-icon,.mat-mdc-unelevated-button>.mat-icon,.mat-mdc-raised-button>.mat-icon,.mat-mdc-outlined-button>.mat-icon{display:inline-block;position:relative;vertical-align:top;font-size:1.125rem;height:1.125rem;width:1.125rem}.mat-mdc-outlined-button .mat-mdc-button-ripple,.mat-mdc-outlined-button .mdc-button__ripple{top:-1px;left:-1px;bottom:-1px;right:-1px}.mat-mdc-unelevated-button .mat-focus-indicator::before,.mat-mdc-raised-button .mat-focus-indicator::before{margin:calc(calc(var(--mat-focus-indicator-border-width, 3px) + 2px)*-1)}.mat-mdc-outlined-button .mat-focus-indicator::before{margin:calc(calc(var(--mat-focus-indicator-border-width, 3px) + 3px)*-1)}\n';
@@ -63378,7 +63379,7 @@ var MatButton = class _MatButton extends MatButtonBase {
     },
     exportAs: ["matButton"],
     features: [\u0275\u0275InheritDefinitionFeature],
-    attrs: _c02,
+    attrs: _c03,
     ngContentSelectors: _c22,
     decls: 7,
     vars: 4,
@@ -63460,7 +63461,7 @@ var MatAnchor = class _MatAnchor extends MatAnchorBase {
     },
     exportAs: ["matButton", "matAnchor"],
     features: [\u0275\u0275InheritDefinitionFeature],
-    attrs: _c02,
+    attrs: _c03,
     ngContentSelectors: _c22,
     decls: 7,
     vars: 4,
@@ -64033,7 +64034,7 @@ var SharedResizeObserver = class _SharedResizeObserver {
 })();
 
 // node_modules/@angular/material/fesm2022/form-field-BPX7ZLIc.mjs
-var _c03 = ["notch"];
+var _c04 = ["notch"];
 var _c13 = ["matFormFieldNotchedOutline", ""];
 var _c23 = ["*"];
 var _c33 = ["textField"];
@@ -64566,7 +64567,7 @@ var MatFormFieldNotchedOutline = class _MatFormFieldNotchedOutline {
     selectors: [["div", "matFormFieldNotchedOutline", ""]],
     viewQuery: function MatFormFieldNotchedOutline_Query(rf, ctx) {
       if (rf & 1) {
-        \u0275\u0275viewQuery(_c03, 5);
+        \u0275\u0275viewQuery(_c04, 5);
       }
       if (rf & 2) {
         let _t;
@@ -65718,7 +65719,7 @@ var _RecycleViewRepeaterStrategy = class {
 };
 
 // node_modules/@angular/cdk/fesm2022/scrolling.mjs
-var _c04 = ["contentWrapper"];
+var _c05 = ["contentWrapper"];
 var _c14 = ["*"];
 var VIRTUAL_SCROLL_STRATEGY = new InjectionToken("VIRTUAL_SCROLL_STRATEGY");
 var FixedSizeVirtualScrollStrategy = class {
@@ -66698,7 +66699,7 @@ var CdkVirtualScrollViewport = class _CdkVirtualScrollViewport extends CdkVirtua
     selectors: [["cdk-virtual-scroll-viewport"]],
     viewQuery: function CdkVirtualScrollViewport_Query(rf, ctx) {
       if (rf & 1) {
-        \u0275\u0275viewQuery(_c04, 7);
+        \u0275\u0275viewQuery(_c05, 7);
       }
       if (rf & 2) {
         let _t;
@@ -70603,7 +70604,7 @@ var _ErrorStateTracker = class {
 };
 
 // node_modules/@angular/material/fesm2022/datepicker.mjs
-var _c05 = ["mat-calendar-body", ""];
+var _c06 = ["mat-calendar-body", ""];
 function _forTrack0($index, $item) {
   return this._trackRow($item);
 }
@@ -71370,7 +71371,7 @@ var MatCalendarBody = class _MatCalendarBody {
     },
     exportAs: ["matCalendarBody"],
     features: [\u0275\u0275NgOnChangesFeature],
-    attrs: _c05,
+    attrs: _c06,
     decls: 11,
     vars: 11,
     consts: [["aria-hidden", "true"], ["role", "row"], [1, "mat-calendar-body-hidden-label", 3, "id"], [1, "mat-calendar-body-label"], [1, "mat-calendar-body-label", 3, "paddingTop", "paddingBottom"], ["role", "gridcell", 1, "mat-calendar-body-cell-container", 3, "width", "paddingTop", "paddingBottom"], ["role", "gridcell", 1, "mat-calendar-body-cell-container"], ["type", "button", 1, "mat-calendar-body-cell", 3, "click", "focus", "ngClass", "tabindex"], [1, "mat-calendar-body-cell-content", "mat-focus-indicator"], ["aria-hidden", "true", 1, "mat-calendar-body-cell-preview"]],
@@ -77556,7 +77557,7 @@ var MatPseudoCheckbox = class _MatPseudoCheckbox {
 })();
 
 // node_modules/@angular/material/fesm2022/option-B6mQ8PwE.mjs
-var _c06 = ["*", [["mat-option"], ["ng-container"]]];
+var _c07 = ["*", [["mat-option"], ["ng-container"]]];
 var _c16 = ["*", "mat-option, ng-container"];
 var _c25 = ["text"];
 var _c35 = [[["mat-icon"]], "*"];
@@ -77636,7 +77637,7 @@ var MatOptgroup = class _MatOptgroup {
     consts: [["role", "presentation", 1, "mat-mdc-optgroup-label", 3, "id"], [1, "mdc-list-item__primary-text"]],
     template: function MatOptgroup_Template(rf, ctx) {
       if (rf & 1) {
-        \u0275\u0275projectionDef(_c06);
+        \u0275\u0275projectionDef(_c07);
         \u0275\u0275elementStart(0, "span", 0)(1, "span", 1);
         \u0275\u0275text(2);
         \u0275\u0275projection(3);
@@ -80246,7 +80247,7 @@ var _DisposeViewRepeaterStrategy = class {
 };
 
 // node_modules/@angular/cdk/fesm2022/table.mjs
-var _c07 = [[["caption"]], [["colgroup"], ["col"]], "*"];
+var _c08 = [[["caption"]], [["colgroup"], ["col"]], "*"];
 var _c17 = ["caption", "colgroup, col", "*"];
 function CdkTable_Conditional_2_Template(rf, ctx) {
   if (rf & 1) {
@@ -82593,7 +82594,7 @@ var CdkTable = class _CdkTable {
     consts: [["role", "rowgroup"], ["headerRowOutlet", ""], ["rowOutlet", ""], ["noDataRowOutlet", ""], ["footerRowOutlet", ""]],
     template: function CdkTable_Template(rf, ctx) {
       if (rf & 1) {
-        \u0275\u0275projectionDef(_c07);
+        \u0275\u0275projectionDef(_c08);
         \u0275\u0275projection(0);
         \u0275\u0275projection(1, 1);
         \u0275\u0275template(2, CdkTable_Conditional_2_Template, 1, 0)(3, CdkTable_Conditional_3_Template, 7, 0)(4, CdkTable_Conditional_4_Template, 4, 0);
@@ -83135,7 +83136,7 @@ function getMultipleValuesInSingleSelectionError() {
 }
 
 // node_modules/@angular/material/fesm2022/table.mjs
-var _c08 = [[["caption"]], [["colgroup"], ["col"]], "*"];
+var _c09 = [[["caption"]], [["colgroup"], ["col"]], "*"];
 var _c18 = ["caption", "colgroup, col", "*"];
 function MatTable_Conditional_2_Template(rf, ctx) {
   if (rf & 1) {
@@ -83265,7 +83266,7 @@ var MatTable = class _MatTable extends CdkTable {
     consts: [["role", "rowgroup"], ["headerRowOutlet", ""], ["role", "rowgroup", 1, "mdc-data-table__content"], ["rowOutlet", ""], ["noDataRowOutlet", ""], ["footerRowOutlet", ""]],
     template: function MatTable_Template(rf, ctx) {
       if (rf & 1) {
-        \u0275\u0275projectionDef(_c08);
+        \u0275\u0275projectionDef(_c09);
         \u0275\u0275projection(0);
         \u0275\u0275projection(1, 1);
         \u0275\u0275template(2, MatTable_Conditional_2_Template, 1, 0)(3, MatTable_Conditional_3_Template, 7, 0)(4, MatTable_Conditional_4_Template, 4, 0);
@@ -84217,7 +84218,7 @@ var MatTableDataSource = class extends DataSource {
 };
 
 // node_modules/@angular/material/fesm2022/module-Dzh-auMR.mjs
-var _c09 = ["trigger"];
+var _c010 = ["trigger"];
 var _c19 = ["panel"];
 var _c26 = [[["mat-select-trigger"]], "*"];
 var _c36 = ["mat-select-trigger", "*"];
@@ -85260,7 +85261,7 @@ var MatSelect = class _MatSelect {
     },
     viewQuery: function MatSelect_Query(rf, ctx) {
       if (rf & 1) {
-        \u0275\u0275viewQuery(_c09, 5);
+        \u0275\u0275viewQuery(_c010, 5);
         \u0275\u0275viewQuery(_c19, 5);
         \u0275\u0275viewQuery(CdkConnectedOverlay, 5);
       }
@@ -85662,7 +85663,7 @@ var MatSelectModule = class _MatSelectModule {
 })();
 
 // node_modules/@angular/material/fesm2022/module-5X7oty_s.mjs
-var _c010 = ["tooltip"];
+var _c011 = ["tooltip"];
 var SCROLL_THROTTLE_MS = 20;
 function getMatTooltipInvalidPositionError(position) {
   return Error(`Tooltip position "${position}" is invalid.`);
@@ -86521,7 +86522,7 @@ var TooltipComponent = class _TooltipComponent {
     selectors: [["mat-tooltip-component"]],
     viewQuery: function TooltipComponent_Query(rf, ctx) {
       if (rf & 1) {
-        \u0275\u0275viewQuery(_c010, 7);
+        \u0275\u0275viewQuery(_c011, 7);
       }
       if (rf & 2) {
         let _t;
@@ -87161,7 +87162,7 @@ var MatPaginatorModule = class _MatPaginatorModule {
 })();
 
 // node_modules/@angular/material/fesm2022/sort.mjs
-var _c011 = ["mat-sort-header", ""];
+var _c012 = ["mat-sort-header", ""];
 var _c110 = ["*"];
 function MatSortHeader_Conditional_3_Template(rf, ctx) {
   if (rf & 1) {
@@ -87560,7 +87561,7 @@ var MatSortHeader = class _MatSortHeader {
       disableClear: [2, "disableClear", "disableClear", booleanAttribute]
     },
     exportAs: ["matSortHeader"],
-    attrs: _c011,
+    attrs: _c012,
     ngContentSelectors: _c110,
     decls: 4,
     vars: 17,
@@ -87697,7 +87698,7 @@ var MatSortModule = class _MatSortModule {
 })();
 
 // src/app/components/charging-history/charging-history.component.ts
-var _c012 = () => [5, 10];
+var _c013 = () => [5, 10];
 function ChargingHistoryComponent_mat_header_cell_17_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "mat-header-cell");
@@ -87956,7 +87957,7 @@ var ChargingHistoryComponent = class _ChargingHistoryComponent {
       \u0275\u0275advance();
       \u0275\u0275property("matRowDefColumns", ctx.displayedColumns);
       \u0275\u0275advance();
-      \u0275\u0275property("length", ctx.dataSource.data.length)("pageSize", ctx.pageSize)("pageSizeOptions", \u0275\u0275pureFunction0(12, _c012));
+      \u0275\u0275property("length", ctx.dataSource.data.length)("pageSize", ctx.pageSize)("pageSizeOptions", \u0275\u0275pureFunction0(12, _c013));
     }
   }, dependencies: [
     CommonModule,
@@ -88080,7 +88081,7 @@ var ChargingHistoryComponent = class _ChargingHistoryComponent {
 })();
 
 // src/app/components/device-card/device-card.component.ts
-var _c013 = () => ({ responsive: true, maintainAspectRatio: false });
+var _c014 = () => ({ responsive: true, maintainAspectRatio: false });
 function DeviceCardComponent_div_0_Template(rf, ctx) {
   if (rf & 1) {
     const _r1 = \u0275\u0275getCurrentView();
@@ -88177,9 +88178,9 @@ function DeviceCardComponent_div_0_Template(rf, ctx) {
     \u0275\u0275advance(2);
     \u0275\u0275property("disabled", !ctx_r1.isCharging)("ngClass", !ctx_r1.isCharging ? "bg-gray-300 cursor-not-allowed" : "bg-red-500 hover:bg-red-600");
     \u0275\u0275advance(11);
-    \u0275\u0275property("data", ctx_r1.currentChartData)("options", \u0275\u0275pureFunction0(18, _c013))("type", "bar");
+    \u0275\u0275property("data", ctx_r1.currentChartData)("options", \u0275\u0275pureFunction0(18, _c014))("type", "bar");
     \u0275\u0275advance(5);
-    \u0275\u0275property("data", ctx_r1.voltageChartData)("options", \u0275\u0275pureFunction0(19, _c013))("type", "bar");
+    \u0275\u0275property("data", ctx_r1.voltageChartData)("options", \u0275\u0275pureFunction0(19, _c014))("type", "bar");
   }
 }
 var DeviceCardComponent = class _DeviceCardComponent {
