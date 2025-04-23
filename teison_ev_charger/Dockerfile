@@ -1,4 +1,5 @@
-FROM python:3.11-slim
+ARG BUILD_FROM
+FROM $BUILD_FROM
 
 RUN pip install --no-cache-dir --upgrade paho-mqtt requests pycryptodome flask flask-cors
 #Add nginx and create the run folder for nginx.

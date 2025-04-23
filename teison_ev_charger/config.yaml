@@ -1,5 +1,5 @@
 name: "Teison EV Charger Control"
-version: "1.0.48"
+version: "1.0.49"
 slug: "teison_ev_charger"
 description: "Control a Teison EV Charger via cloud API"
 hassio_api: true
@@ -40,3 +40,7 @@ schema:
 ports:
   "5000/tcp": null
 webui: "http://[HOST]:[PORT:5000]"
+build_from:
+  aarch64: "ghcr.io/home-assistant/aarch64-base-python:3.11"
+  amd64: "ghcr.io/home-assistant/amd64-base-python:3.11"
+
