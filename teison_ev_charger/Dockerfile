@@ -1,8 +1,14 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
-# Install dependencies
+# Set working directory
+WORKDIR /app
+
+# Install Python, pip, and build dependencies
 RUN apk add --no-cache \
+    python3 \
+    py3-pip \
+    build-base \
     python3-dev \
     libffi-dev \
     openssl-dev \
@@ -10,12 +16,12 @@ RUN apk add --no-cache \
     gcc \
     libgcc \
     make \
-    g++ \
-    linux-headers
+    g++
+
+# Confirm Python and pip exist (debug step)
+RUN python3 --version && pip3 --version
 
 COPY requirements.txt /requirements.txt
-
-RUN python3 --version
 
 RUN pip install --no-cache-dir -r /requirements.txt
 
@@ -24,7 +30,6 @@ COPY frontend /frontend
 COPY assets /assets
 COPY teison.py /teison.py
 RUN chmod +x /run.sh
-
 
 EXPOSE 5000
 
