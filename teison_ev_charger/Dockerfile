@@ -1,25 +1,18 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
-# Set working directory
-WORKDIR /app
 
-# Install Python, pip, and build dependencies
-RUN apk add --no-cache \
-    python3 \
-    py3-pip \
-    build-base \
-    python3-dev \
-    libffi-dev \
-    openssl-dev \
-    musl-dev \
-    gcc \
-    libgcc \
-    make \
-    g++
+
+# Install requirements for add-on
+RUN \
+  apk add --no-cache \
+    python3
 
 # Confirm Python and pip exist (debug step)
 RUN python3 --version && pip3 --version
+
+# Set working directory
+WORKDIR /data
 
 COPY requirements.txt /requirements.txt
 
