@@ -12,6 +12,7 @@ from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5
 # Config
 HA_BASE_URL = "http://homeassistant.local:8123/api/states/"
+TEISON_BASE_URL = "https://cloud.teison.com/"
 
 
 # Public key for password encryption
@@ -77,26 +78,51 @@ HEADERS = {
     "Content-Type": "application/json"
 }
 
-def login_and_get_device():
-    global token, device_id
-    encrypted_password = encrypt_password(password)
+def post_login(user_name, pass_word):
+    encrypted_password = encrypt_password(pass_word)
     login_res = requests.post(
-        'https://cloud.teison.com/api/v1/login/login',
-        json={"username": username, "password": encrypted_password}
+        f'{TEISON_BASE_URL}api/v1/login/login',
+        json={"username": user_name, "password": encrypted_password}
     )
-    login_data = login_res.json()
-    token = login_data['data']['token']
-
-    headers = {'token': token}
+    return login_res.json()
+def get_device_list(local_token):
+    headers = {'token': local_token}
     device_res = requests.get(
-        'https://cloud.teison.com/cpAm2/cp/deviceList',
+        f'{TEISON_BASE_URL}cpAm2/cp/deviceList',
         headers=headers
     )
-    device_list = device_res.json().get('bizData', [])
+    return device_res.json()
+def get_device_details(local_token, local_device_id):
+    headers = {'token': local_token}
+    res = requests.get(
+        f'{TEISON_BASE_URL}cpAm2/cp/deviceDetail/{local_device_id}',
+        headers=headers
+    )
+    return res.json()
+def get_cp_config(local_token, local_device_id):
+    headers = {'token': local_token}
+    res = requests.get(
+        f'{TEISON_BASE_URL}cpAm2/cp/getCpConfig/{local_device_id}',
+        headers=headers
+    )
+    return res.json()
+def get_rates(local_token):
+    headers = {'token': local_token}
+    res = requests.get(
+        f'{TEISON_BASE_URL}cpAm2/users/getRates',
+        headers=headers
+    )
+    return res.json()
+def login_and_get_device():
+    global token, device_id
+    login_data = post_login(username,password)
+    token = login_data['data']['token']
+    device_list = get_device_list(token).get('bizData', [])
     device_list = device_list['deviceList']
     if len(device_list) > device_index:
         device_id = device_list[device_index]['id']
         print(f"Using device ID: {device_id}")
+
 def post_sensor(sensor_id, state, attributes):
     try:
         url = f"{HA_BASE_URL}sensor.{sensor_id}"
@@ -112,12 +138,7 @@ def post_sensor(sensor_id, state, attributes):
 def mqtt_publish_status():
     while True:
         if token and device_id:
-            headers = {'token': token}
-            res = requests.get(
-                f'https://cloud.teison.com/cpAm2/cp/deviceDetail/{device_id}',
-                headers=headers
-            )
-            status = res.json()
+            status = get_device_details(token, device_id)
             voltage = status.get("bizData", {}).get("voltage")
             print("Voltage:", voltage)
             voltage2 = status.get("bizData", {}).get("voltage2")
@@ -148,18 +169,12 @@ def mqtt_publish_status():
             power = status.get("bizData", {}).get("power")  # power in w
             print("accEnergy:", power)
 
-            res2 = requests.get(
-                f'https://cloud.teison.com/cpAm2/cp/getCpConfig/{device_id}',
-                headers=headers
-            )
-            getCpConfig = res2.json()
+
+            getCpConfig = get_cp_config(token,device_id)
             maxCurrent = getCpConfig.get("bizData", {}).get("maxCurrent")
 
-            res3 = requests.get(
-                f'https://cloud.teison.com/cpAm2/users/getRates',
-                headers=headers
-            )
-            getRates = res3.json()
+
+            getRates = get_rates(token)
             rates = getRates.get("bizData", {}).get("rates")
             currency = getRates.get("bizData", {}).get("currency")
 
@@ -287,7 +302,7 @@ def on_message(client, userdata, msg):
                 "rates": value,
             }
             requests.post(
-                f'https://cloud.teison.com/cpAm2/users/setRates',
+                f'{TEISON_BASE_URL}cpAm2/users/setRates',
                 json=payload,
                 headers=headers
             )
@@ -298,19 +313,19 @@ def on_message(client, userdata, msg):
                 "currency": value,
             }
             requests.post(
-                f'https://cloud.teison.com/cpAm2/users/setRates',
+                f'{TEISON_BASE_URL}cpAm2/users/setRates',
                 json=payload,
                 headers=headers
             )
         elif payload == "start":
             requests.post(
-                f'https://cloud.teison.com/cpAm2/cp/startCharge/{device_id}',
+                f'{TEISON_BASE_URL}cpAm2/cp/startCharge/{device_id}',
                 headers=headers
             )
             client.publish("teison/charger/state", "start")
         elif payload == "stop":
             requests.get(
-                f'https://cloud.teison.com/cpAm2/cp/stopCharge/{device_id}',
+                f'{TEISON_BASE_URL}cpAm2/cp/stopCharge/{device_id}',
                 headers=headers
             )
             client.publish("teison/charger/state", "stop")
@@ -418,7 +433,7 @@ def static_files(path):
 def start():
     if token and device_id:
         headers = {'token': token}
-        r = requests.post(f'https://cloud.teison.com/cpAm2/cp/startCharge/{device_id}', headers=headers)
+        r = requests.post(f'{TEISON_BASE_URL}cpAm2/cp/startCharge/{device_id}', headers=headers)
         return jsonify(r.json())
     return jsonify({"error": "Not ready"}), 400
 
@@ -426,16 +441,14 @@ def start():
 def stop():
     if token and device_id:
         headers = {'token': token}
-        r = requests.post(f'https://cloud.teison.com/cpAm2/cp/stopCharge/{device_id}', headers=headers)
+        r = requests.post(f'{TEISON_BASE_URL}cpAm2/cp/stopCharge/{device_id}', headers=headers)
         return jsonify(r.json())
     return jsonify({"error": "Not ready"}), 400
 
 @app.route('/status', methods=['GET'])
 def status():
     if token and device_id:
-        headers = {'token': token}
-        r = requests.get(f'https://cloud.teison.com/cpAm2/cp/deviceDetail/{device_id}', headers=headers)
-        return jsonify(r.json())
+        return get_device_details(token,device_id)
     return jsonify({"error": "Not ready"}), 400
 @app.route('/token', methods=['GET'])
 def get_token():
@@ -447,11 +460,6 @@ def get_token():
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
-    encrypted_password = encrypt_password(data.get("password"))
-    login_res = requests.post(
-        'https://cloud.teison.com/api/v1/login/login',
-        json={"username": data.get("username"), "password": encrypted_password}
-    )
-    return jsonify(login_res.json())
+    return jsonify(post_login(data.get("username"),data.get("password")))
 
 app.run(host='0.0.0.0', port=5000)
