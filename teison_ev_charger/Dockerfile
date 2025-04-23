@@ -1,4 +1,7 @@
-FROM python:3.11-slim
+ARG BUILD_FROM
+FROM $BUILD_FROM
+
+RUN apk add --no-cache python3 py3-pip
 
 RUN pip install --no-cache-dir --upgrade paho-mqtt requests pycryptodome flask flask-cors
 #Add nginx and create the run folder for nginx.
@@ -15,6 +18,8 @@ COPY teison.py /teison.py
 RUN chmod +x /run.sh
 
 # COPY ingress.conf /etc/nginx/http.d/
+
+EXPOSE 5000
 
 CMD [ "/run.sh" ]
 
