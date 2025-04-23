@@ -1,9 +1,27 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
-RUN apk add --no-cache python3 py3-pip
+# Install dependencies
+RUN apk add --no-cache \
+    python3 \
+    py3-pip \
+    build-base \
+    python3-dev \
+    libffi-dev \
+    openssl-dev \
+    musl-dev \
+    gcc \
+    libgcc
 
-RUN pip install --no-cache-dir --upgrade paho-mqtt requests pycryptodome flask flask-cors
+# Upgrade pip and install Python packages
+RUN pip install --no-cache-dir --upgrade \
+    pip \
+    paho-mqtt \
+    requests \
+    pycryptodome \
+    flask \
+    flask-cors
+
 #Add nginx and create the run folder for nginx.
 # RUN \
 #   apk --no-cache add \
