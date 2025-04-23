@@ -8,8 +8,6 @@ RUN \
   apk add --no-cache \
     python3
 
-# Confirm Python and pip exist (debug step)
-RUN python3 --version && pip3 --version
 
 # Set working directory
 WORKDIR /data
