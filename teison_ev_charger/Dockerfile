@@ -8,4 +8,6 @@ COPY assets /assets
 COPY teison.py /teison.py
 RUN chmod +x /run.sh
 
+EXPOSE 5000
+
 CMD [ "/run.sh" ]
