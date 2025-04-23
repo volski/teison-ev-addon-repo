@@ -1,6 +1,12 @@
 FROM python:3.11-slim
 
 RUN pip install --no-cache-dir --upgrade paho-mqtt requests pycryptodome flask flask-cors
+#Add nginx and create the run folder for nginx.
+RUN \
+  apk --no-cache add \
+    nginx \
+  \
+  && mkdir -p /run/nginx
 
 COPY run.sh /run.sh
 COPY frontend /frontend
@@ -8,6 +14,9 @@ COPY assets /assets
 COPY teison.py /teison.py
 RUN chmod +x /run.sh
 
-EXPOSE 5000:5000
+COPY ingress.conf /etc/nginx/http.d/
 
 CMD [ "/run.sh" ]
+
+#Launch nginx with debug options.
+CMD [ "nginx","-g","daemon off;error_log /dev/stdout debug;" ]
