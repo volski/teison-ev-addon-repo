@@ -30,8 +30,12 @@ def encrypt_password(password):
     return b64encode(encrypted).decode('utf-8')
 
 config_path = './data/options.json'
-with open(config_path) as f:
-    config = json.load(f)
+try:
+    with open(config_path) as f:
+        config = json.load(f)
+except FileNotFoundError:
+    print("⚠️ options.json not found, using defaults.")
+    config = {}
 
 username = config.get('username')
 password = config.get('password')
