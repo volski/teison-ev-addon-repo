@@ -1,2 +1,2 @@
-#!/usr/bin/with-contenv bashio
+#!/bin/bash
 python3 /teison.py
