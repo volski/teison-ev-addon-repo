@@ -430,8 +430,11 @@ def index():
     return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/<path:path>')
-def static_files(path):
-    return send_from_directory(app.static_folder, path)
+def serve_frontend(path):
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/start', methods=['POST'])
 def start():
