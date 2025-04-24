@@ -22,7 +22,9 @@ lLg22grOvvuQ76NtwGPeAUklREWJqArQgd4U6RCx0vVCT6gtBOtXUK2NkSJvKjUW
 BhRp6in5VJikMp1+KxyO2vgjIrKMDWzucuoeozBQ89LhhyoB2Sp3jpxKpb83/Pqu
 p0gQXJmL39hJ3O+HlwIDAQAB
 -----END PUBLIC KEY-----"""
-
+def debug_print(*args, **kwargs):
+    if debug:
+        print(*args, **kwargs)
 def encrypt_password(password):
     rsa_key = RSA.import_key(public_key_pem)
     cipher = PKCS1_v1_5.new(rsa_key)
@@ -34,7 +36,7 @@ try:
     with open(config_path) as f:
         config = json.load(f)
 except FileNotFoundError:
-    print("⚠️ options.json not found, using defaults.")
+    debug_print("⚠️ options.json not found, using defaults.")
     config = {}
 
 username = config.get('username')
@@ -46,6 +48,7 @@ mqtt_pass = config.get('mqtt_pass')
 device_index = config.get('device_index', 0)
 HA_TOKEN = config.get('access_token')
 pull_interval = config.get('pull_interval',10)
+debug = config.get('is_debug',True)
 
 token = None
 device_id = None
@@ -72,9 +75,9 @@ if os.path.exists(config_path):
             data = json.load(f)
             currency_list = data.get("currencyList", [])
     except json.JSONDecodeError as e:
-        print(f"Error decoding JSON: {e}")
+        debug_print(f"Error decoding JSON: {e}")
 else:
-    print(f"File not found: {config_path}")
+    debug_print(f"File not found: {config_path}")
 
 
 HEADERS = {
@@ -125,7 +128,7 @@ def login_and_get_device():
     device_list = device_list['deviceList']
     if len(device_list) > device_index:
         device_id = device_list[device_index]['id']
-        print(f"Using device ID: {device_id}")
+        debug_print(f"Using device ID: {device_id}")
 
 def post_sensor(sensor_id, state, attributes):
     try:
@@ -135,43 +138,43 @@ def post_sensor(sensor_id, state, attributes):
             "attributes": attributes
         }
         response = requests.post(url, headers=HEADERS, data=json.dumps(payload))
-        print(f"Updated {sensor_id}: {response.status_code} - {response.text}")
+        debug_print(f"Updated {sensor_id}: {response.status_code} - {response.text}")
     except Exception as e:
-        print(f"Error updating {sensor_id}: {e}")
+        debug_print(f"Error updating {sensor_id}: {e}")
 
 def mqtt_publish_status():
     while True:
         if token and device_id:
             status = get_device_details(token, device_id)
             voltage = status.get("bizData", {}).get("voltage")
-            print("Voltage:", voltage)
+            debug_print("Voltage:", voltage)
             voltage2 = status.get("bizData", {}).get("voltage2")
-            print("Voltage2:", voltage2)
+            debug_print("Voltage2:", voltage2)
             voltage3 = status.get("bizData", {}).get("voltage3")
-            print("Voltage3:", voltage3)
+            debug_print("Voltage3:", voltage3)
 
             current = status.get("bizData", {}).get("current")
-            print("Current:", current)
+            debug_print("Current:", current)
             current2 = status.get("bizData", {}).get("current2")
-            print("Current2:", current2)
+            debug_print("Current2:", current2)
             current3 = status.get("bizData", {}).get("current3")
-            print("Current3:", current3)
+            debug_print("Current3:", current3)
 
             connStatus = status.get("bizData", {}).get("connStatus")
-            print("connStatus:", connStatus)
+            debug_print("connStatus:", connStatus)
 
             energy = status.get("bizData", {}).get("energy")
-            print("energy:", energy)
+            debug_print("energy:", energy)
 
             temperature = status.get("bizData", {}).get("temperature")
-            print("temperature:", temperature)
+            debug_print("temperature:", temperature)
 
             spendTime = status.get("bizData", {}).get("spendTime") #convert milisecond to HH:MM:ss
-            print("spendTime:", spendTime)
+            debug_print("spendTime:", spendTime)
             accEnergy = status.get("bizData", {}).get("accEnergy") #energy in kWh
-            print("accEnergy:", accEnergy)
+            debug_print("accEnergy:", accEnergy)
             power = status.get("bizData", {}).get("power")  # power in w
-            print("accEnergy:", power)
+            debug_print("accEnergy:", power)
 
 
             getCpConfig = get_cp_config(token,device_id)
@@ -182,6 +185,10 @@ def mqtt_publish_status():
             rates = getRates.get("bizData", {}).get("rates")
             currency = getRates.get("bizData", {}).get("currency")
 
+            if connStatus == 0:
+                client.publish("teison/charger/state", "stop")
+            else:
+                client.publish("teison/charger/state", "start")
 
             # Post each sensor
             post_sensor("ev_charger_status", get_device_status(connStatus), {
@@ -269,27 +276,27 @@ def ms_to_hms(ms_string):
     return f"{hours:02}:{minutes:02}:{seconds:02}"
 
 def on_connect(client, userdata, flags, rc):
-    print("Connected to MQTT")
+    debug_print("Connected to MQTT")
     client.subscribe("teison/evcharger/command")
-    print("subscribe - teison/evcharger/command")
+    debug_print("subscribe - teison/evcharger/command")
     client.subscribe("teison/charger/set")
-    print("subscribe - teison/charger/set")
+    debug_print("subscribe - teison/charger/set")
     client.subscribe("teison/charger/current/set")
-    print("subscribe - teison/charger/current/set")
+    debug_print("subscribe - teison/charger/current/set")
     client.subscribe("teison/power_rate/set")
-    print("subscribe - teison/power_rate/set")
+    debug_print("subscribe - teison/power_rate/set")
     client.subscribe("teison/currency/set")
-    print("subscribe - teison/currency/set")
+    debug_print("subscribe - teison/currency/set")
 
 def on_message(client, userdata, msg):
 
     payload = msg.payload.decode()
-    print(f"on_message - {payload}")
+    debug_print(f"on_message - {payload}")
     if token and device_id:
         headers = {'token': token}
         if msg.topic == "teison/charger/current/set":
             value = int(msg.payload.decode())
-            print(f"New current limit: {value}A")
+            debug_print(f"New current limit: {value}A")
             payload = {
                 "key": "VendorMaxWorkCurrent",
                 "value": value,
@@ -301,7 +308,7 @@ def on_message(client, userdata, msg):
             )
         elif msg.topic == "teison/power_rate/set":
             value = float(msg.payload.decode())
-            print(f"New power rate: {value}kwh")
+            debug_print(f"New power rate: {value}kwh")
             payload = {
                 "rates": value,
             }
@@ -312,7 +319,7 @@ def on_message(client, userdata, msg):
             )
         elif msg.topic == "teison/currency/set":
             value = msg.payload.decode()
-            print(f"New currency: {value}")
+            debug_print(f"New currency: {value}")
             payload = {
                 "currency": value,
             }

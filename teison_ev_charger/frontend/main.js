@@ -90590,7 +90590,7 @@ var DeviceCardComponent = class _DeviceCardComponent {
         this.device.voltage2,
         this.device.voltage3
       ];
-      this.isCharging = this.device.connStatus != 0;
+      this.isCharging = this.device.connStatus != 0 && this.device.connStatus != 5;
     }
   }
   getDeviceStatus = getDeviceStatus;
