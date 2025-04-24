@@ -4,8 +4,8 @@ slug: "teison_ev_charger"
 description: "Control a Teison EV Charger via cloud API"
 hassio_api: true
 auth_api: true
-panel_icon: "mdi:zigbee"
-panel_title: "Zigbee2Mqtt"
+panel_icon: "mdi:ev-station"
+panel_title: "EvTeisonCharger"
 #panel_admin: true
 #ingress: true
 #ingress_port: 5000
