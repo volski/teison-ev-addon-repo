@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/components/charging-history/charging-history.component.css"],
-  "sourcesContent": ["mat-table {\r\n  table-layout: fixed;\r\n  width: 100%;\r\n}\r\n\r\nmat-header-cell, mat-cell {\r\n  overflow: hidden;\r\n  text-overflow: ellipsis; /* This will truncate long text with an ellipsis */\r\n}\r\n\r\nmat-form-field {\r\n  width: 100%;\r\n}\r\n"],
-  "mappings": ";AAAA;AACE,gBAAA;AACA,SAAA;AACF;AAEA;AAAA;AACE,YAAA;AACA,iBAAA;AACF;AAEA;AACE,SAAA;AACF;",
-  "names": []
-}
