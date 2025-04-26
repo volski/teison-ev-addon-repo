@@ -495,13 +495,13 @@ def serve_frontend(path):
 @app.route('/start', methods=['POST'])
 def start():
     if token and device_id:
-        return jsonify(start_charge(token,app_option,device_id))
+        return start_charge(token,app_option,device_id)
     return jsonify({"error": "Not ready"}), 400
 
 @app.route('/stop', methods=['POST'])
 def stop():
     if token and device_id:
-        return jsonify(stop_charge(token,app_option,device_id))
+        return stop_charge(token,app_option,device_id)
     return jsonify({"error": "Not ready"}), 400
 
 @app.route('/status', methods=['GET'])
