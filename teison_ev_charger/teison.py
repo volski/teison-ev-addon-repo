@@ -5,14 +5,13 @@ import time
 import requests
 import threading
 import paho.mqtt.client as mqtt
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request,Response, send_from_directory
 from flask_cors import CORS
 from base64 import b64encode
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5
 # Config
 HA_BASE_URL = "http://homeassistant.local:8123/api/states/"
-TEISON_BASE_URL = "https://cloud.teison.com/"
 
 
 # Public key for password encryption
@@ -49,6 +48,7 @@ device_index = config.get('device_index', 0)
 HA_TOKEN = config.get('access_token')
 pull_interval = config.get('pull_interval',10)
 debug = config.get('is_debug',True)
+app_option = config.get("appOption",'MyTeison')
 
 token = None
 device_id = None
@@ -58,6 +58,11 @@ def is_hassio():
         os.environ.get("SUPERVISOR_TOKEN") is not None or
         os.path.exists("/assets")
     )
+def get_base_url(selected_app_option):
+    if selected_app_option == "MyTeison":
+        return "https://cloud.teison.com/"
+    else:
+        return "https://teison-m3.x-cheng.com/"
 
 
 # Set the file path based on the environment (Windows vs Docker)
@@ -84,47 +89,120 @@ HEADERS = {
     "Authorization": f"Bearer {HA_TOKEN}",
     "Content-Type": "application/json"
 }
-
-def post_login(user_name, pass_word):
+def post_login_teison_me(user_name, pass_word, app_option):
+    payload = {'language': 'en_US',
+               'username': user_name,
+               'password': pass_word}
+    login_res = requests.post(
+        f'{get_base_url(app_option)}cpAm2/login',
+        data=payload
+    )
+    return login_res.json()
+def post_login(user_name, pass_word, local_app_option):
     encrypted_password = encrypt_password(pass_word)
     login_res = requests.post(
-        f'{TEISON_BASE_URL}api/v1/login/login',
+        f'{get_base_url(local_app_option)}api/v1/login/login',
         json={"username": user_name, "password": encrypted_password}
     )
     return login_res.json()
-def get_device_list(local_token):
+def get_device_list(local_token, local_app_option):
     headers = {'token': local_token}
     device_res = requests.get(
-        f'{TEISON_BASE_URL}cpAm2/cp/deviceList',
+        f'{get_base_url(local_app_option)}cpAm2/cp/deviceList',
         headers=headers
     )
     return device_res.json()
-def get_device_details(local_token, local_device_id):
+def get_device_details(local_token, local_app_option, local_device_id):
     headers = {'token': local_token}
     res = requests.get(
-        f'{TEISON_BASE_URL}cpAm2/cp/deviceDetail/{local_device_id}',
+        f'{get_base_url(local_app_option)}cpAm2/cp/deviceDetail/{local_device_id}',
         headers=headers
     )
     return res.json()
-def get_cp_config(local_token, local_device_id):
+def get_cp_config(local_token,local_app_option, local_device_id):
     headers = {'token': local_token}
     res = requests.get(
-        f'{TEISON_BASE_URL}cpAm2/cp/getCpConfig/{local_device_id}',
+        f'{get_base_url(local_app_option)}cpAm2/cp/getCpConfig/{local_device_id}',
         headers=headers
     )
     return res.json()
-def get_rates(local_token):
+def set_cp_config(local_token,local_app_option, local_device_id,value):
     headers = {'token': local_token}
-    res = requests.get(
-        f'{TEISON_BASE_URL}cpAm2/users/getRates',
+    payload = {
+        "key": "VendorMaxWorkCurrent",
+        "value": value,
+    }
+    res = requests.post(
+        f'{get_base_url(local_app_option)}cpAm2/cp/changeCpConfig/{local_device_id}',
+        json=payload,
         headers=headers
     )
     return res.json()
+def get_rates(local_token,local_app_option):
+    headers = {'token': local_token}
+    res = requests.get(
+        f'{get_base_url(local_app_option)}cpAm2/users/getRates',
+        headers=headers
+    )
+    return res.json()
+def set_rates(local_token,local_app_option,rates=None, currency=None):
+    headers = {'token': local_token}
+    if rates is not None and currency is not None:
+        payload = {
+            "rates": rates,
+            "currency": currency
+        }
+    elif rates is not None:
+        payload = {
+            "rates": rates
+        }
+    elif currency is not None:
+        payload = {
+            "currency": currency
+        }
+    else:
+        payload = {}
+    res = requests.post(
+        f'{get_base_url(local_app_option)}cpAm2/users/setRates',
+        json=payload,
+        headers=headers
+    )
+    return res.json()
+def get_charge_record_list(local_token,local_app_option, local_device_id,from_date, to_date):
+    headers = {'token': local_token}
+    charge_record_list_res = requests.get(
+        f'{get_base_url(local_app_option)}cpAm2/tran/chargeRecordList/{local_device_id}?from={from_date}&to={to_date}',
+        headers=headers
+    )
+    return charge_record_list_res.json()
+def start_charge(local_token, local_app_option, local_device_id):
+    headers = {'token': local_token}
+    r = requests.post(f'{get_base_url(local_app_option)}cpAm2/cp/startCharge/{local_device_id}', headers=headers)
+    return jsonify(r.json())
+def stop_charge(local_token, local_app_option, local_device_id):
+    headers = {'token': local_token}
+    r = requests.get(f'{get_base_url(local_app_option)}cpAm2/cp/stopCharge/{local_device_id}', headers=headers)
+    return jsonify(r.json())
+def export_excel(local_token, local_app_option, local_device_id, from_date, to_date):
+    headers = {'token': local_token}
+    r = requests.get(f'{get_base_url(local_app_option)}cpAm2/tran/exportExcel/{local_device_id}?from={from_date}&to={to_date}', headers=headers)
+    if r.status_code == 200:
+        return Response(
+            r.content
+        )
+    else:
+        return {"error": "Failed to fetch file"}, 500
+
 def login_and_get_device():
     global token, device_id
-    login_data = post_login(username,password)
-    token = login_data['data']['token']
-    device_list = get_device_list(token).get('bizData', [])
+    if(app_option == "MyTeison"):
+        login_data = post_login(username, password, app_option)
+        token = login_data['data']['token']
+    else:
+        login_data = post_login_teison_me(username, password, app_option)
+        token = login_data['token']
+
+    device_list = get_device_list(token,app_option).get('bizData', [])
     device_list = device_list['deviceList']
     if len(device_list) > device_index:
         device_id = device_list[device_index]['id']
@@ -145,7 +223,7 @@ def post_sensor(sensor_id, state, attributes):
 def mqtt_publish_status():
     while True:
         if token and device_id:
-            status = get_device_details(token, device_id)
+            status = get_device_details(token, app_option, device_id)
             voltage = status.get("bizData", {}).get("voltage")
             debug_print("Voltage:", voltage)
             voltage2 = status.get("bizData", {}).get("voltage2")
@@ -177,11 +255,11 @@ def mqtt_publish_status():
             debug_print("accEnergy:", power)
 
 
-            getCpConfig = get_cp_config(token,device_id)
+            getCpConfig = get_cp_config(token,app_option,device_id)
             maxCurrent = getCpConfig.get("bizData", {}).get("maxCurrent")
 
 
-            getRates = get_rates(token)
+            getRates = get_rates(token, app_option)
             rates = getRates.get("bizData", {}).get("rates")
             currency = getRates.get("bizData", {}).get("currency")
 
@@ -293,52 +371,23 @@ def on_message(client, userdata, msg):
     payload = msg.payload.decode()
     debug_print(f"on_message - {payload}")
     if token and device_id:
-        headers = {'token': token}
         if msg.topic == "teison/charger/current/set":
             value = int(msg.payload.decode())
             debug_print(f"New current limit: {value}A")
-            payload = {
-                "key": "VendorMaxWorkCurrent",
-                "value": value,
-            }
-            requests.post(
-                f'https://cloud.teison.com/cpAm2/cp/changeCpConfig/{device_id}',
-                json=payload,
-                headers=headers
-            )
+            set_cp_config(token, app_option, device_id, value)
         elif msg.topic == "teison/power_rate/set":
             value = float(msg.payload.decode())
             debug_print(f"New power rate: {value}kwh")
-            payload = {
-                "rates": value,
-            }
-            requests.post(
-                f'{TEISON_BASE_URL}cpAm2/users/setRates',
-                json=payload,
-                headers=headers
-            )
+            set_rates(token, app_option, value, None)
         elif msg.topic == "teison/currency/set":
             value = msg.payload.decode()
             debug_print(f"New currency: {value}")
-            payload = {
-                "currency": value,
-            }
-            requests.post(
-                f'{TEISON_BASE_URL}cpAm2/users/setRates',
-                json=payload,
-                headers=headers
-            )
+            set_rates(token,app_option,None,value)
         elif payload == "start":
-            requests.post(
-                f'{TEISON_BASE_URL}cpAm2/cp/startCharge/{device_id}',
-                headers=headers
-            )
+            start_charge(token,app_option,device_id)
             client.publish("teison/charger/state", "start")
         elif payload == "stop":
-            requests.get(
-                f'{TEISON_BASE_URL}cpAm2/cp/stopCharge/{device_id}',
-                headers=headers
-            )
+            stop_charge(token,app_option,device_id)
             client.publish("teison/charger/state", "stop")
 def get_device_status(status: int) -> str:
     if status == 88:
@@ -446,23 +495,19 @@ def serve_frontend(path):
 @app.route('/start', methods=['POST'])
 def start():
     if token and device_id:
-        headers = {'token': token}
-        r = requests.post(f'{TEISON_BASE_URL}cpAm2/cp/startCharge/{device_id}', headers=headers)
-        return jsonify(r.json())
+        return jsonify(start_charge(token,app_option,device_id))
     return jsonify({"error": "Not ready"}), 400
 
 @app.route('/stop', methods=['POST'])
 def stop():
     if token and device_id:
-        headers = {'token': token}
-        r = requests.post(f'{TEISON_BASE_URL}cpAm2/cp/stopCharge/{device_id}', headers=headers)
-        return jsonify(r.json())
+        return jsonify(stop_charge(token,app_option,device_id))
     return jsonify({"error": "Not ready"}), 400
 
 @app.route('/status', methods=['GET'])
 def status():
     if token and device_id:
-        return get_device_details(token,device_id)
+        return get_device_details(token,app_option,device_id)
     return jsonify({"error": "Not ready"}), 400
 @app.route('/token', methods=['GET'])
 def get_token():
@@ -474,6 +519,69 @@ def get_token():
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
-    return jsonify(post_login(data.get("username"),data.get("password")))
+    if data.get("appOption") == "MyTeison":
+        return jsonify(post_login(data.get("username"), data.get("password"),data.get("appOption")))
+    else:
+        return jsonify(post_login_teison_me(data.get("username"), data.get("password"), data.get("appOption")))
 
+@app.route('/chargeRecordList',methods=['GET'])
+def charge_record_list():
+    local_token = request.headers.get('token')
+    local_app_option = request.headers.get('appOption')
+    local_device_id = request.args.get('deviceId')
+    from_date = request.args.get('from')
+    to_date = request.args.get('to')
+    return get_charge_record_list(local_token,local_app_option,local_device_id,from_date,to_date)
+@app.route('/deviceList',methods=['GET'])
+def device_list():
+    local_token = request.headers.get('token')
+    local_app_option = request.headers.get('appOption')
+    return get_device_list(local_token,local_app_option)
+@app.route('/deviceDetail/<local_device_id>',methods=['GET'])
+def device_detail(local_device_id):
+    local_token = request.headers.get('token')
+    local_app_option = request.headers.get('appOption')
+    return get_device_details(local_token,local_app_option,local_device_id)
+@app.route('/startCharge/<local_device_id>',methods=['POST'])
+def post_start_charge(local_device_id):
+    local_token = request.headers.get('token')
+    local_app_option = request.headers.get('appOption')
+    return start_charge(local_token,local_app_option,local_device_id)
+@app.route('/stopCharge/<local_device_id>',methods=['GET'])
+def get_stop_charge(local_device_id):
+    local_token = request.headers.get('token')
+    local_app_option = request.headers.get('appOption')
+    return stop_charge(local_token,local_app_option,local_device_id)
+@app.route('/getRates',methods=['GET'])
+def flask_get_rates():
+    local_token = request.headers.get('token')
+    local_app_option = request.headers.get('appOption')
+    return get_rates(local_token,local_app_option)
+@app.route('/setRates',methods=['POST'])
+def flask_set_rates():
+    local_token = request.headers.get('token')
+    local_app_option = request.headers.get('appOption')
+    data = request.get_json()
+    return set_rates(local_token,local_app_option,data.get("rates"),data.get("currency"))
+@app.route('/getCpConfig/<local_device_id>',methods=['GET'])
+def flask_get_cp_config(local_device_id):
+    local_token = request.headers.get('token')
+    local_app_option = request.headers.get('appOption')
+    return get_cp_config(local_token,local_app_option,local_device_id)
+@app.route('/changeCpConfig/<local_device_id>',methods=['POST'])
+def flask_set_cp_config(local_device_id):
+    local_token = request.headers.get('token')
+    local_app_option = request.headers.get('appOption')
+    data = request.get_json()
+    return set_cp_config(local_token,local_app_option,local_device_id,data.get("value"))
+
+
+
+@app.route('/exportExcel/<local_device_id>',methods=['GET'])
+def flask_export_excel(local_device_id):
+    local_token = request.headers.get('token')
+    local_app_option = request.headers.get('appOption')
+    from_date = request.args.get('from')
+    to_date = request.args.get('to')
+    return export_excel(local_token,local_app_option,local_device_id,from_date,to_date)
 app.run(host='0.0.0.0', port=5000)

@@ -1,5 +1,5 @@
 name: "Teison EV Charger Control"
-version: "1.0.61"
+version: "1.0.62"
 slug: "teison_ev_charger"
 description: "Control a Teison EV Charger via cloud API"
 hassio_api: true
@@ -28,6 +28,7 @@ options:
   access_token: ""
   pull_interval: 10
   is_debug: true
+  appOption: "MyTeison"
 schema:
   username: "str"
   password: "str"
@@ -39,6 +40,7 @@ schema:
   access_token: "str"
   pull_interval: "int"
   is_debug: "bool"
+  appOption: "select(MyTeison|Teison Me)"
 ports:
   "5000/tcp": null
 webui: "http://[HOST]:[PORT:5000]"
