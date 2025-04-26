@@ -512,7 +512,7 @@ def status():
 @app.route('/token', methods=['GET'])
 def get_token():
     if token and device_id:
-        json_string = f'{{"token": "{token}", "device_id": {device_id}}}'
+        json_string = f'{{"token": "{token}", "device_id": "{device_id}", "appOption": "{app_option}"}}'
         data = json.loads(json_string)
         return jsonify(data)
     return jsonify({"error": "Not ready"}), 400
