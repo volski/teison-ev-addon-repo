@@ -178,11 +178,11 @@ def get_charge_record_list(local_token,local_app_option, local_device_id,from_da
 def start_charge(local_token, local_app_option, local_device_id):
     headers = {'token': local_token}
     r = requests.post(f'{get_base_url(local_app_option)}cpAm2/cp/startCharge/{local_device_id}', headers=headers)
-    return jsonify(r.json())
+    return r.json()
 def stop_charge(local_token, local_app_option, local_device_id):
     headers = {'token': local_token}
     r = requests.get(f'{get_base_url(local_app_option)}cpAm2/cp/stopCharge/{local_device_id}', headers=headers)
-    return jsonify(r.json())
+    return r.json()
 def export_excel(local_token, local_app_option, local_device_id, from_date, to_date):
     headers = {'token': local_token}
     r = requests.get(f'{get_base_url(local_app_option)}cpAm2/tran/exportExcel/{local_device_id}?from={from_date}&to={to_date}', headers=headers)
