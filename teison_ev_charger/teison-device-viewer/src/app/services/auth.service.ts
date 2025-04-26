@@ -11,8 +11,8 @@ export class AuthService {
   constructor(private http: HttpClient, private mainService: MainService, private router: Router) {
     http.get(this.localServer + '/token').subscribe((res: any) => {
       if(res){
-        console.log(res.token)
         this.mainService.setToken(res.token);
+        this.mainService.setAppOptionKey(res.appOption);
         this.router.navigate(['/devices'])
       }
     })
