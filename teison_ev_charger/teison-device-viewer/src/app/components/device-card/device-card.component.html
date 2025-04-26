@@ -1,0 +1,97 @@
+<div *ngIf="device">
+  <div class="bg-white shadow-lg rounded-2xl p-6 border border-gray-200 max-w-3xl mx-auto mt-6">
+    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center border-b pb-4">
+      Device Details
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-base text-gray-700 mb-6">
+      <div class="mb-4">
+        <span class="font-semibold">Status:</span>
+        <span [style.color]="getDeviceStatusColor(device.connStatus)">
+        {{ getDeviceStatus(device.connStatus) }}
+      </span>
+      </div>
+      <div class="mb-4"><span class="font-semibold">Temperature:</span> {{ device.temperature }} °C</div>
+      <div class="mb-4"><span class="font-semibold">Max Current:</span> {{ maxCurrent }} A</div>
+      <div class="mb-4"><span class="font-semibold">Power:</span> {{ device.power }} W</div>
+      <div class="mb-4"><span class="font-semibold">Duration:</span> {{ getDuration(device.spendTime) }}</div>
+      <div class="mb-4"><span class="font-semibold">Energy:</span> {{ device.accEnergy }} kWh</div>
+    </div>
+
+    <!-- Charging Action Section -->
+    <div class="bg-white shadow-lg rounded-2xl p-6 mt-6">
+      <div class="flex flex-col sm:flex-row gap-4 justify-between flex-wrap">
+        <!-- Start Charging Button -->
+        <button mat-raised-button
+                (click)="startCharging()"
+                [disabled]="isCharging"
+                class="w-full sm:w-1/2 lg:w-auto py-3 px-6 rounded-lg text-white font-medium transition duration-300"
+                [ngClass]="isCharging ? 'bg-gray-300 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'">
+          ▶ Start Charging
+        </button>
+
+        <!-- Stop Charging Button -->
+        <button mat-raised-button
+                (click)="stopCharging()"
+                [disabled]="!isCharging"
+                class="w-full sm:w-1/2 lg:w-auto py-3 px-6 rounded-lg text-white font-medium transition duration-300"
+                [ngClass]="!isCharging ? 'bg-gray-300 cursor-not-allowed' : 'bg-red-500 hover:bg-red-600'">
+          ■ Stop Charging
+        </button>
+      </div>
+
+      <!-- Spacer Between Buttons and View History Button -->
+      <div class="mt-6"></div>
+
+      <div class="flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4 mt-6">
+        <!-- View Charging History -->
+        <button mat-raised-button
+                (click)="openHistory()"
+                class="text-blue-600 hover:text-blue-800 font-semibold underline transition duration-200">
+          📊 View Charging History
+        </button>
+
+        <!-- Change Tariff & Currency -->
+        <button mat-raised-button
+                color="accent"
+                (click)="openTariffCurrencyDialog()"
+                class="text-white bg-purple-600 hover:bg-purple-700 font-medium px-4 py-2 rounded-lg transition">
+          💱 Change Tariff & Currency
+        </button>
+
+        <!-- Set Max Current -->
+        <button mat-raised-button
+                (click)="openCurrentDialog()"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-3 rounded-lg transition">
+          ⚡ Set Max Current
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+    <!-- Current Chart -->
+    <div class="bg-white p-4 rounded-xl shadow-md h-[350px]">
+      <h3 class="text-lg font-semibold mb-2 text-center text-blue-600">Current</h3>
+      <div class="h-[280px]">
+        <canvas baseChart
+                [data]="currentChartData"
+                [options]="{ responsive: true, maintainAspectRatio: false }"
+                [type]="'bar'">
+        </canvas>
+      </div>
+    </div>
+
+    <!-- Voltage Chart -->
+    <div class="bg-white p-4 rounded-xl shadow-md h-[350px]">
+      <h3 class="text-lg font-semibold mb-2 text-center text-yellow-600">Voltage</h3>
+      <div class="h-[280px]">
+        <canvas baseChart
+                [data]="voltageChartData"
+                [options]="{ responsive: true, maintainAspectRatio: false }"
+                [type]="'bar'">
+        </canvas>
+      </div>
+    </div>
+  </div>
+</div>

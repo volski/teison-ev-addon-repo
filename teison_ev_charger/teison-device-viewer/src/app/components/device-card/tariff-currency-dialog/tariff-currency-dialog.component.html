@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>Update Tariff and Currency</h2>
+
+<mat-dialog-content class="space-y-4">
+  <mat-form-field appearance="fill" class="w-full">
+    <mat-label>Tariff (per kWh)</mat-label>
+    <input matInput type="number" [(ngModel)]="data.tariff">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="w-full">
+    <mat-label>Currency</mat-label>
+    <mat-select [(ngModel)]="data.currency">
+      <mat-option *ngFor="let code of currencyList" [value]="code">
+        {{ code }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()">Submit</button>
+</mat-dialog-actions>

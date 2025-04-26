@@ -1,0 +1,68 @@
+/* Style for the device list container */
+.device-list-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f4f7fc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.device-list-title {
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.device-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.device-table th, .device-table td {
+  padding: 12px;
+  text-align: left;
+  font-size: 16px;
+}
+
+.device-table th {
+  background-color: #4c9bff;
+  color: white;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.device-table td {
+  background-color: #ffffff;
+  border-bottom: 1px solid #ddd;
+}
+
+.device-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.device-table tr:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+.device-row:hover {
+  background-color: #e6f7ff;
+}
+
+.device-table td span {
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+/* Responsive adjustments for small screens */
+@media screen and (max-width: 768px) {
+  .device-table th, .device-table td {
+    padding: 8px;
+    font-size: 14px;
+  }
+}

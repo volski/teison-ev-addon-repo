@@ -1,0 +1,45 @@
+<div class="login-container">
+  <h2 class="login-title">Login</h2>
+  <form #loginForm="ngForm" (ngSubmit)="onLogin()" class="login-form">
+
+    <label for="username" class="form-label">Username:</label>
+    <input
+        type="text"
+        id="username"
+        [(ngModel)]="username"
+        name="username"
+        class="form-input"
+        required
+    />
+
+    <label for="password" class="form-label">Password:</label>
+    <input
+        type="password"
+        id="password"
+        [(ngModel)]="password"
+        name="password"
+        class="form-input"
+        required
+    />
+
+    <label for="appOption" class="form-label">App Option:</label>
+    <select
+        id="appOption"
+        [(ngModel)]="appOption"
+        name="appOption"
+        class="form-input"
+        required
+        (change)="onAppOptionChange($event)"
+    >
+      <option value="MyTeison">MyTeison</option>
+      <option value="Teison Me">Teison Me</option>
+    </select>
+
+    <button type="submit" class="submit-btn" [disabled]="loginForm.invalid">
+      Login
+    </button>
+
+    <p *ngIf="error" class="error-message">{{ error }}</p>
+
+  </form>
+</div>

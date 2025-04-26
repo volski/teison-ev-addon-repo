@@ -1,0 +1,36 @@
+export interface DeviceDetail {
+  errorCode: number;
+  idTagId: string | null;
+  connStatus: number;
+  info: string | null;
+  txStart: string | null;
+  txStop: string | null;
+  current: number;
+  current2: number;
+  current3: number;
+  accEnergy: number;
+  accEnergy2: number;
+  voltage: number;
+  voltage2: number;
+  voltage3: number;
+  power: number;
+  temperature: number;
+  transId: string | null;
+  idToken: string | null;
+  userId: string | null;
+  headImgUrl: string | null;
+  username: string | null;
+  energy: number;
+  type: string | null;
+  maxCurrent: number;
+  scheduleStart: string | null;
+  scheduleEnd: string | null;
+  scheduleType: string | null;
+  spendTime: string | null;
+  startTime: string;
+  endTime: string;
+  icardNum: string | null;
+  icName: string | null;
+  icEnergy: number;
+  overRuleEnable: boolean | null;
+}

@@ -1,0 +1,16 @@
+<h2 mat-dialog-title>Set Max Current</h2>
+
+<mat-dialog-content class="pt-4 pb-2 space-y-4">
+  <div class="text-center font-medium text-gray-700">
+    Selected: <span class="text-blue-600">{{ current }} A</span>
+  </div>
+
+  <mat-slider min="6" max="32" step="1">
+    <input matSliderThumb [(value)]="current">
+  </mat-slider>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="pt-4">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()">Submit</button>
+</mat-dialog-actions>

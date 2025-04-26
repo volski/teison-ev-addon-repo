@@ -1,0 +1,13 @@
+mat-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+mat-header-cell, mat-cell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+mat-form-field {
+  width: 100%;
+}

@@ -1,0 +1,57 @@
+<button mat-raised-button (click)="exportToExcel()" class="m-5 bg-green-500 text-white px-4 py-2 rounded">
+  ⬇️ Export Excel
+</button>
+<div class="date-filters" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+  <mat-form-field appearance="fill">
+    <mat-label>From Date</mat-label>
+    <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromDate" (dateChange)="onDateChange()">
+    <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+    <mat-datepicker #fromPicker></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>To Date</mat-label>
+    <input matInput [matDatepicker]="toPicker" [(ngModel)]="toDate" (dateChange)="onDateChange()">
+    <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+    <mat-datepicker #toPicker></mat-datepicker>
+  </mat-form-field>
+</div>
+
+<mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+  <ng-container matColumnDef="timestampStart">
+    <mat-header-cell *matHeaderCellDef> Start </mat-header-cell>
+    <mat-cell *matCellDef="let row" style="width: 300px; overflow: hidden; text-overflow: ellipsis;" matTooltip="{{ row.timestampStart | date:'medium' }}">
+      {{ row.timestampStart | date:'short' }}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="timestampStop">
+    <mat-header-cell *matHeaderCellDef> Stop </mat-header-cell>
+    <mat-cell *matCellDef="let row" style="width: 300px; overflow: hidden; text-overflow: ellipsis;" matTooltip="{{ row.timestampStop | date:'medium' }}">
+      {{ row.timestampStop | date:'short' }}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="duration">
+    <mat-header-cell *matHeaderCellDef> Duration </mat-header-cell>
+    <mat-cell *matCellDef="let row"> {{ row.duration }} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="energy">
+    <mat-header-cell *matHeaderCellDef> Energy (kWh) </mat-header-cell>
+    <mat-cell *matCellDef="let row"> {{ row.energy }} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="cost">
+    <mat-header-cell *matHeaderCellDef> Cost </mat-header-cell>
+    <mat-cell *matCellDef="let row"> {{ row.cost }} </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>
+
+<mat-paginator [length]="dataSource.data.length"
+               [pageSize]="pageSize"
+               [pageSizeOptions]="[5, 10]">
+</mat-paginator>
