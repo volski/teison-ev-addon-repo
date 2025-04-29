@@ -28,4 +28,8 @@ export class MainService {
   getBaseApiUrl() {
     return this.localServer;
   }
+
+  clearToken() {
+    localStorage.removeItem(this.tokenKey);
+  }
 }

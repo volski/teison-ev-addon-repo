@@ -74,7 +74,8 @@
     <div class="bg-white p-4 rounded-xl shadow-md h-[350px]">
       <h3 class="text-lg font-semibold mb-2 text-center text-blue-600">Current</h3>
       <div class="h-[280px]">
-        <canvas baseChart
+        <canvas #currentChartDataView
+            baseChart
                 [data]="currentChartData"
                 [options]="{ responsive: true, maintainAspectRatio: false }"
                 [type]="'bar'">
@@ -86,7 +87,8 @@
     <div class="bg-white p-4 rounded-xl shadow-md h-[350px]">
       <h3 class="text-lg font-semibold mb-2 text-center text-yellow-600">Voltage</h3>
       <div class="h-[280px]">
-        <canvas baseChart
+        <canvas #voltageChartDataView
+            baseChart
                 [data]="voltageChartData"
                 [options]="{ responsive: true, maintainAspectRatio: false }"
                 [type]="'bar'">

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnChanges} from '@angular/core';
+import {AfterViewInit, Component, Input, OnChanges, ViewChild} from '@angular/core';
 import {ChartConfiguration} from "chart.js";
 import {BaseChartDirective} from "ng2-charts";
 import {NgClass, NgIf} from "@angular/common";
@@ -27,6 +27,8 @@ import {MainService} from "../../services/main.service";
   styleUrl: './device-card.component.css'
 })
 export class DeviceCardComponent implements OnChanges, AfterViewInit {
+  @ViewChild('currentChartDataView', { read: BaseChartDirective }) currentChartDataView?: BaseChartDirective;
+  @ViewChild('voltageChartDataView', { read: BaseChartDirective }) voltageChartDataView?: BaseChartDirective;
   @Input() device: DeviceDetail | undefined;
   @Input() deviceId!: string | null;
   isCharging: any;
@@ -70,6 +72,12 @@ export class DeviceCardComponent implements OnChanges, AfterViewInit {
       this.getRates();
       this.getMaxCurrent();
     }
+    setInterval(() => {
+      if (this.voltageChartDataView != undefined && this.currentChartDataView != undefined) {
+        this.voltageChartDataView?.update();
+        this.currentChartDataView?.update();
+      }
+    },1000)
     }
   chartOptions = {
     responsive: true,

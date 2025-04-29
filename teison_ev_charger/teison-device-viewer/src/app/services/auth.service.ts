@@ -10,7 +10,7 @@ export class AuthService {
 
   constructor(private http: HttpClient, private mainService: MainService, private router: Router) {
     http.get(this.localServer + '/token').subscribe((res: any) => {
-      if(res){
+      if(res && res?.token && res?.appOption){
         this.mainService.setToken(res.token);
         this.mainService.setAppOptionKey(res.appOption);
         this.router.navigate(['/devices'])
@@ -39,5 +39,9 @@ export class AuthService {
   appChanged(appOption: string) {
     this.mainService.setAppOptionKey(appOption);
     console.log(this.mainService.getBaseApiUrl())
+  }
+
+  clearToken() {
+    this.mainService.clearToken();
   }
 }

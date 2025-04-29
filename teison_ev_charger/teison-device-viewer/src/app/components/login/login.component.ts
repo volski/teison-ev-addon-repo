@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -13,7 +13,7 @@ import {MainService} from "../../services/main.service";
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit{
   username = '';
   password = '';
   appOption: string = 'MyTeison';
@@ -23,14 +23,20 @@ export class LoginComponent {
   }
 
   onLogin() {
-
-    this.authService.login(this.username, this.password, this.appOption).subscribe({
-      next: () => this.router.navigate(['/devices']),
-      error: () => this.error = 'Login failed.'
-    });
+    this.authService.login(this.username, this.password, this.appOption).subscribe(res => {
+      if(res && (res?.code === 200 || res?.token)){
+        this.router.navigate(['/devices'])
+      }else{
+        this.error = 'Login failed.'
+      }
+    })
   }
 
   onAppOptionChange($event: Event) {
     this.authService.appChanged(this.appOption);
+  }
+
+  ngOnInit(): void {
+    this.authService.clearToken();
   }
 }
