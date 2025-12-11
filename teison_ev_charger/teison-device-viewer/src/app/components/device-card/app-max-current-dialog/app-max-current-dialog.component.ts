@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import {Component, Inject, Input} from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -21,6 +21,8 @@ import { MatSliderModule } from '@angular/material/slider';
 })
 export class AppMaxCurrentDialogComponent {
   current: number;
+  @Input() min: string = '0';
+  @Input() max: string = '0';
 
   constructor(
       public dialogRef: MatDialogRef<AppMaxCurrentDialogComponent>,

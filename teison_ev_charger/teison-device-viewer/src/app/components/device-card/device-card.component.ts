@@ -35,6 +35,7 @@ export class DeviceCardComponent implements OnChanges, AfterViewInit {
   rate = 0.50;
   currency = 'USD';
   maxCurrent = 16;
+  householdCurrent = 16;
 
   constructor(private http: HttpClient,
               private dialog: MatDialog,
@@ -71,6 +72,7 @@ export class DeviceCardComponent implements OnChanges, AfterViewInit {
     if(this.deviceId){
       this.getRates();
       this.getMaxCurrent();
+      this.getHouseholdCurrent();
     }
     setInterval(() => {
       if (this.voltageChartDataView != undefined && this.currentChartDataView != undefined) {
@@ -179,6 +181,19 @@ export class DeviceCardComponent implements OnChanges, AfterViewInit {
     );
 
   }
+  getHouseholdCurrent(){
+    const url = `${this.mainService.getBaseApiUrl()}getCpConfig/${this.deviceId}`;
+    this.http.get<{ bizData: ChargerConfigModel }>(url, {}).subscribe(
+        (response) => {
+          console.log('DirectlyScheduleConstraintInfo:', response.bizData);
+          this.householdCurrent = response.bizData.directlyScheduleConstraintInfo
+        },
+        (error) => {
+          console.error('Error stopped charging:', error);
+        }
+    );
+
+  }
   setMaxCurrent(){
     const body = {
       key: "VendorMaxWorkCurrent",
@@ -188,6 +203,21 @@ export class DeviceCardComponent implements OnChanges, AfterViewInit {
     this.http.post(url, body).subscribe(
         (response) => {
           this.getMaxCurrent()
+        },
+        (error) => {
+          console.error('Error starting charging:', error);
+        }
+    );
+  }
+  setHouseholdCurrent(){
+    const body = {
+      key: "DirectlyScheduleConstraintInfo",
+      value: this.householdCurrent
+    }
+    const url = `${this.mainService.getBaseApiUrl()}changeCpConfig/${this.deviceId}`;
+    this.http.post(url, body).subscribe(
+        (response) => {
+          this.getHouseholdCurrent()
         },
         (error) => {
           console.error('Error starting charging:', error);
@@ -218,11 +248,29 @@ export class DeviceCardComponent implements OnChanges, AfterViewInit {
       data: { current: this.maxCurrent } // Initial value
     });
 
+    dialogRef.componentInstance.max = '32';
+    dialogRef.componentInstance.min = '6';
     dialogRef.afterClosed().subscribe(result => {
       if (result !== undefined) {
         this.maxCurrent = result
         this.setMaxCurrent();
         console.log('New max current:', result);
+        // handle the new max current here
+      }
+    });
+  }
+  openHouseholdCurrentDialog(): void {
+    const dialogRef = this.dialog.open(AppMaxCurrentDialogComponent, {
+      data: { current: this.householdCurrent } // Initial value
+    });
+
+    dialogRef.componentInstance.max = '200';
+    dialogRef.componentInstance.min = '6';
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        this.householdCurrent = result
+        this.setHouseholdCurrent();
+        console.log('New household current:', result);
         // handle the new max current here
       }
     });

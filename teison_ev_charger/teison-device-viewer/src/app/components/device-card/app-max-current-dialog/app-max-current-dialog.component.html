@@ -5,7 +5,7 @@
     Selected: <span class="text-blue-600">{{ current }} A</span>
   </div>
 
-  <mat-slider min="6" max="32" step="1">
+  <mat-slider min="{{min}}" max="{{max}}" step="1">
     <input matSliderThumb [(value)]="current">
   </mat-slider>
 </mat-dialog-content>

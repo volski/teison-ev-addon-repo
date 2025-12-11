@@ -13,6 +13,7 @@
       </div>
       <div class="mb-4"><span class="font-semibold">Temperature:</span> {{ device.temperature }} °C</div>
       <div class="mb-4"><span class="font-semibold">Max Current:</span> {{ maxCurrent }} A</div>
+      <div class="mb-4"><span class="font-semibold">Household Current:</span> {{ householdCurrent }} A</div>
       <div class="mb-4"><span class="font-semibold">Power:</span> {{ device.power }} W</div>
       <div class="mb-4"><span class="font-semibold">Duration:</span> {{ getDuration(device.spendTime) }}</div>
       <div class="mb-4"><span class="font-semibold">Energy:</span> {{ device.accEnergy }} kWh</div>
@@ -29,7 +30,13 @@
                 [ngClass]="isCharging ? 'bg-gray-300 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'">
           ▶ Start Charging
         </button>
-
+        <!-- Change Tariff & Currency -->
+        <button mat-raised-button
+                color="accent"
+                (click)="openTariffCurrencyDialog()"
+                class="text-white bg-purple-600 hover:bg-purple-700 font-medium px-4 py-2 rounded-lg transition">
+          💱 Change Tariff & Currency
+        </button>
         <!-- Stop Charging Button -->
         <button mat-raised-button
                 (click)="stopCharging()"
@@ -51,12 +58,11 @@
           📊 View Charging History
         </button>
 
-        <!-- Change Tariff & Currency -->
+        <!-- Set Household Current -->
         <button mat-raised-button
-                color="accent"
-                (click)="openTariffCurrencyDialog()"
-                class="text-white bg-purple-600 hover:bg-purple-700 font-medium px-4 py-2 rounded-lg transition">
-          💱 Change Tariff & Currency
+                (click)="openHouseholdCurrentDialog()"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-3 rounded-lg transition">
+          ⚡ Set Household Current
         </button>
 
         <!-- Set Max Current -->
