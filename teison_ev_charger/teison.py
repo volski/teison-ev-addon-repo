@@ -126,10 +126,10 @@ def get_cp_config(local_token,local_app_option, local_device_id):
         headers=headers
     )
     return res.json()
-def set_cp_config(local_token,local_app_option, local_device_id,value):
+def set_cp_config(local_token,local_app_option, local_device_id,key,value):
     headers = {'token': local_token}
     payload = {
-        "key": "VendorMaxWorkCurrent",
+        "key": key,
         "value": value,
     }
     res = requests.post(
@@ -257,6 +257,7 @@ def mqtt_publish_status():
 
             getCpConfig = get_cp_config(token,app_option,device_id)
             maxCurrent = getCpConfig.get("bizData", {}).get("maxCurrent")
+            householdCurrent = getCpConfig.get("bizData", {}).get("directlyScheduleConstraintInfo")
 
 
             getRates = get_rates(token, app_option)
@@ -338,6 +339,7 @@ def mqtt_publish_status():
                 "icon": "mdi:current-ac"
             })
             client.publish("teison/charger/current/state", maxCurrent, retain=True)
+            client.publish("teison/charger/householdCurrent/state", householdCurrent, retain=True)
             client.publish("teison/power_rate/state", rates, retain=True)
             client.publish("teison/currency/state", currency, retain=True)
             # client.publish("teison/evcharger/status", json.dumps(status))
@@ -353,7 +355,7 @@ def ms_to_hms(ms_string):
     seconds = seconds % 60
     return f"{hours:02}:{minutes:02}:{seconds:02}"
 
-def on_connect(client, userdata, flags, rc):
+def on_connect(client, userdata, flags, rc, properties):
     debug_print("Connected to MQTT")
     client.subscribe("teison/evcharger/command")
     debug_print("subscribe - teison/evcharger/command")
@@ -361,6 +363,8 @@ def on_connect(client, userdata, flags, rc):
     debug_print("subscribe - teison/charger/set")
     client.subscribe("teison/charger/current/set")
     debug_print("subscribe - teison/charger/current/set")
+    client.subscribe("teison/charger/householdCurrent/set")
+    debug_print("subscribe - teison/charger/householdCurrent/set")
     client.subscribe("teison/power_rate/set")
     debug_print("subscribe - teison/power_rate/set")
     client.subscribe("teison/currency/set")
@@ -374,7 +378,11 @@ def on_message(client, userdata, msg):
         if msg.topic == "teison/charger/current/set":
             value = int(msg.payload.decode())
             debug_print(f"New current limit: {value}A")
-            set_cp_config(token, app_option, device_id, value)
+            set_cp_config(token, app_option, device_id, "VendorMaxWorkCurrent",value)
+        elif msg.topic == "teison/charger/householdCurrent/set":
+            value = int(msg.payload.decode())
+            debug_print(f"New household current limit: {value}A")
+            set_cp_config(token, app_option, device_id, "DirectlyScheduleConstraintInfo", value)
         elif msg.topic == "teison/power_rate/set":
             value = float(msg.payload.decode())
             debug_print(f"New power rate: {value}kwh")
@@ -409,7 +417,7 @@ def get_device_status(status: int) -> str:
 
 login_and_get_device()
 
-client = mqtt.Client(protocol=mqtt.MQTTv311)
+client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.enable_logger()
 client.username_pw_set(mqtt_user, mqtt_pass)
 client.on_connect = on_connect
@@ -448,6 +456,23 @@ client.publish(
     }),
     retain=True
 )
+client.publish(
+    "homeassistant/number/teison_charger_household_current/config",
+    json.dumps({
+        "name": "Charging Household Current",
+        "unique_id": "teison_charger_household_current",
+        "command_topic": "teison/charger/householdCurrent/set",
+        "state_topic": "teison/charger/householdCurrent/state",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit_of_measurement": "A",
+        "mode": "slider",
+        "retain": True
+    }),
+    retain=True
+)
+
 
 client.publish(
     "homeassistant/select/teison_currency/config",
@@ -573,7 +598,7 @@ def flask_set_cp_config(local_device_id):
     local_token = request.headers.get('token')
     local_app_option = request.headers.get('appOption')
     data = request.get_json()
-    return set_cp_config(local_token,local_app_option,local_device_id,data.get("value"))
+    return set_cp_config(local_token,local_app_option,local_device_id,data.get("key"),data.get("value"))
 
 
 
