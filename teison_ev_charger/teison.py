@@ -10,6 +10,7 @@ from flask_cors import CORS
 from base64 import b64encode
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5
+from requests.exceptions import RequestException, SSLError
 # Config
 HA_BASE_URL = "http://homeassistant.local:8123/api/states/"
 
@@ -89,6 +90,7 @@ HEADERS = {
     "Authorization": f"Bearer {HA_TOKEN}",
     "Content-Type": "application/json"
 }
+DEFAULT_EMPTY_RATES = {"bizData": {"rates": None, "currency": None}}
 def post_login_teison_me(user_name, pass_word, app_option):
     payload = {'language': 'en_US',
                'username': user_name,
@@ -138,13 +140,21 @@ def set_cp_config(local_token,local_app_option, local_device_id,key,value):
         headers=headers
     )
     return res.json()
-def get_rates(local_token,local_app_option):
+def get_rates(local_token, local_app_option, retries=3, retry_delay=2):
     headers = {'token': local_token}
-    res = requests.get(
-        f'{get_base_url(local_app_option)}cpAm2/users/getRates',
-        headers=headers
-    )
-    return res.json()
+    url = f'{get_base_url(local_app_option)}cpAm2/users/getRates'
+    for attempt in range(1, retries + 1):
+        try:
+            res = requests.get(url, headers=headers, timeout=10)
+            res.raise_for_status()
+            return res.json()
+        except (SSLError, RequestException) as err:
+            debug_print(f"Error fetching rates (attempt {attempt}/{retries}): {err}")
+            if attempt < retries:
+                time.sleep(retry_delay)
+            else:
+                debug_print("Falling back to empty rates due to repeated failures")
+                return {"bizData": {"rates": None, "currency": None}}
 def set_rates(local_token,local_app_option,rates=None, currency=None):
     headers = {'token': local_token}
     if rates is not None and currency is not None:
@@ -223,126 +233,129 @@ def post_sensor(sensor_id, state, attributes):
 def mqtt_publish_status():
     while True:
         if token and device_id:
-            status = get_device_details(token, app_option, device_id)
-            voltage = status.get("bizData", {}).get("voltage")
-            debug_print("Voltage:", voltage)
-            voltage2 = status.get("bizData", {}).get("voltage2")
-            debug_print("Voltage2:", voltage2)
-            voltage3 = status.get("bizData", {}).get("voltage3")
-            debug_print("Voltage3:", voltage3)
+            try:
+                status = get_device_details(token, app_option, device_id)
+                voltage = status.get("bizData", {}).get("voltage")
+                debug_print("Voltage:", voltage)
+                voltage2 = status.get("bizData", {}).get("voltage2")
+                debug_print("Voltage2:", voltage2)
+                voltage3 = status.get("bizData", {}).get("voltage3")
+                debug_print("Voltage3:", voltage3)
 
-            current = status.get("bizData", {}).get("current")
-            debug_print("Current:", current)
-            current2 = status.get("bizData", {}).get("current2")
-            debug_print("Current2:", current2)
-            current3 = status.get("bizData", {}).get("current3")
-            debug_print("Current3:", current3)
+                current = status.get("bizData", {}).get("current")
+                debug_print("Current:", current)
+                current2 = status.get("bizData", {}).get("current2")
+                debug_print("Current2:", current2)
+                current3 = status.get("bizData", {}).get("current3")
+                debug_print("Current3:", current3)
 
-            connStatus = status.get("bizData", {}).get("connStatus")
-            debug_print("connStatus:", connStatus)
+                connStatus = status.get("bizData", {}).get("connStatus")
+                debug_print("connStatus:", connStatus)
 
-            energy = status.get("bizData", {}).get("energy")
-            debug_print("energy:", energy)
+                energy = status.get("bizData", {}).get("energy")
+                debug_print("energy:", energy)
 
-            temperature = status.get("bizData", {}).get("temperature")
-            debug_print("temperature:", temperature)
+                temperature = status.get("bizData", {}).get("temperature")
+                debug_print("temperature:", temperature)
 
-            spendTime = status.get("bizData", {}).get("spendTime") #convert milisecond to HH:MM:ss
-            debug_print("spendTime:", spendTime)
-            accEnergy = status.get("bizData", {}).get("accEnergy") #energy in kWh
-            debug_print("accEnergy:", accEnergy)
-            power = status.get("bizData", {}).get("power")  # power in w
-            debug_print("accEnergy:", power)
-
-
-            getCpConfig = get_cp_config(token,app_option,device_id)
-            maxCurrent = getCpConfig.get("bizData", {}).get("maxCurrent")
-            householdCurrent = getCpConfig.get("bizData", {}).get("directlyScheduleConstraintInfo")
+                spendTime = status.get("bizData", {}).get("spendTime") #convert milisecond to HH:MM:ss
+                debug_print("spendTime:", spendTime)
+                accEnergy = status.get("bizData", {}).get("accEnergy") #energy in kWh
+                debug_print("accEnergy:", accEnergy)
+                power = status.get("bizData", {}).get("power")  # power in w
+                debug_print("accEnergy:", power)
 
 
-            getRates = get_rates(token, app_option)
-            rates = getRates.get("bizData", {}).get("rates")
-            currency = getRates.get("bizData", {}).get("currency")
+                getCpConfig = get_cp_config(token,app_option,device_id)
+                maxCurrent = getCpConfig.get("bizData", {}).get("maxCurrent")
+                householdCurrent = getCpConfig.get("bizData", {}).get("directlyScheduleConstraintInfo")
 
-            if connStatus == 0:
-                client.publish("teison/charger/state", "stop")
-            else:
-                client.publish("teison/charger/state", "start")
 
-            # Post each sensor
-            post_sensor("ev_charger_status", get_device_status(connStatus), {
-                "friendly_name": "EV Charger Status",
-                "icon": "mdi:ev-station"
-            })
+                getRates = get_rates(token, app_option)
+                rates = getRates.get("bizData", {}).get("rates")
+                currency = getRates.get("bizData", {}).get("currency")
 
-            post_sensor("ev_charger_power", power, {
-                "unit_of_measurement": "w",
-                "device_class": "power",
-                "friendly_name": "EV Charger Power",
-                "icon": "mdi:flash"
-            })
-            post_sensor("ev_charger_accEnergy", accEnergy, {
-                "unit_of_measurement": "kWh",
-                "device_class": "power",
-                "friendly_name": "EV Charger Energy",
-                "icon": "mdi:flash"
-            })
+                if connStatus == 0:
+                    client.publish("teison/charger/state", "stop")
+                else:
+                    client.publish("teison/charger/state", "start")
 
-            post_sensor("ev_charger_spendTime", ms_to_hms(spendTime), {
-                "unit_of_measurement": "",
-                "device_class": "power",
-                "friendly_name": "EV Charger Duration",
-                "icon": "mdi:flash"
-            })
-            post_sensor("ev_charger_temperature", temperature, {
-                "unit_of_measurement": "C",
-                "device_class": "power",
-                "friendly_name": "EV Charger Temperature",
-                "icon": "mdi:temperature-celsius"
-            })
+                # Post each sensor
+                post_sensor("ev_charger_status", get_device_status(connStatus), {
+                    "friendly_name": "EV Charger Status",
+                    "icon": "mdi:ev-station"
+                })
 
-            post_sensor("ev_charger_voltage", voltage, {
-                "unit_of_measurement": "V",
-                "device_class": "voltage",
-                "friendly_name": "EV Charger Voltage",
-                "icon": "mdi:flash-outline"
-            })
-            post_sensor("ev_charger_voltage2", voltage2, {
-                "unit_of_measurement": "V",
-                "device_class": "voltage",
-                "friendly_name": "EV Charger Voltage2",
-                "icon": "mdi:flash-outline"
-            })
-            post_sensor("ev_charger_voltage3", voltage3, {
-                "unit_of_measurement": "V",
-                "device_class": "voltage",
-                "friendly_name": "EV Charger Voltage3",
-                "icon": "mdi:flash-outline"
-            })
+                post_sensor("ev_charger_power", power, {
+                    "unit_of_measurement": "w",
+                    "device_class": "power",
+                    "friendly_name": "EV Charger Power",
+                    "icon": "mdi:flash"
+                })
+                post_sensor("ev_charger_accEnergy", accEnergy, {
+                    "unit_of_measurement": "kWh",
+                    "device_class": "power",
+                    "friendly_name": "EV Charger Energy",
+                    "icon": "mdi:flash"
+                })
 
-            post_sensor("ev_charger_current", current, {
-                "unit_of_measurement": "A",
-                "device_class": "current",
-                "friendly_name": "EV Charger Current",
-                "icon": "mdi:current-ac"
-            })
-            post_sensor("ev_charger_current2", current2, {
-                "unit_of_measurement": "A",
-                "device_class": "current",
-                "friendly_name": "EV Charger Current2",
-                "icon": "mdi:current-ac"
-            })
-            post_sensor("ev_charger_current3", current3, {
-                "unit_of_measurement": "A",
-                "device_class": "current",
-                "friendly_name": "EV Charger Current3",
-                "icon": "mdi:current-ac"
-            })
-            client.publish("teison/charger/current/state", maxCurrent, retain=True)
-            client.publish("teison/charger/householdCurrent/state", householdCurrent, retain=True)
-            client.publish("teison/power_rate/state", rates, retain=True)
-            client.publish("teison/currency/state", currency, retain=True)
-            # client.publish("teison/evcharger/status", json.dumps(status))
+                post_sensor("ev_charger_spendTime", ms_to_hms(spendTime), {
+                    "unit_of_measurement": "",
+                    "device_class": "power",
+                    "friendly_name": "EV Charger Duration",
+                    "icon": "mdi:flash"
+                })
+                post_sensor("ev_charger_temperature", temperature, {
+                    "unit_of_measurement": "C",
+                    "device_class": "power",
+                    "friendly_name": "EV Charger Temperature",
+                    "icon": "mdi:temperature-celsius"
+                })
+
+                post_sensor("ev_charger_voltage", voltage, {
+                    "unit_of_measurement": "V",
+                    "device_class": "voltage",
+                    "friendly_name": "EV Charger Voltage",
+                    "icon": "mdi:flash-outline"
+                })
+                post_sensor("ev_charger_voltage2", voltage2, {
+                    "unit_of_measurement": "V",
+                    "device_class": "voltage",
+                    "friendly_name": "EV Charger Voltage2",
+                    "icon": "mdi:flash-outline"
+                })
+                post_sensor("ev_charger_voltage3", voltage3, {
+                    "unit_of_measurement": "V",
+                    "device_class": "voltage",
+                    "friendly_name": "EV Charger Voltage3",
+                    "icon": "mdi:flash-outline"
+                })
+
+                post_sensor("ev_charger_current", current, {
+                    "unit_of_measurement": "A",
+                    "device_class": "current",
+                    "friendly_name": "EV Charger Current",
+                    "icon": "mdi:current-ac"
+                })
+                post_sensor("ev_charger_current2", current2, {
+                    "unit_of_measurement": "A",
+                    "device_class": "current",
+                    "friendly_name": "EV Charger Current2",
+                    "icon": "mdi:current-ac"
+                })
+                post_sensor("ev_charger_current3", current3, {
+                    "unit_of_measurement": "A",
+                    "device_class": "current",
+                    "friendly_name": "EV Charger Current3",
+                    "icon": "mdi:current-ac"
+                })
+                client.publish("teison/charger/current/state", maxCurrent, retain=True)
+                client.publish("teison/charger/householdCurrent/state", householdCurrent, retain=True)
+                client.publish("teison/power_rate/state", rates, retain=True)
+                client.publish("teison/currency/state", currency, retain=True)
+                # client.publish("teison/evcharger/status", json.dumps(status))
+            except Exception as err:
+                debug_print(f"Error in mqtt_publish_status loop: {err}")
         time.sleep(pull_interval)
 def ms_to_hms(ms_string):
     if ms_string is not None:
