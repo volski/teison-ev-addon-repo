@@ -72,6 +72,7 @@ app_option = config.get("appOption",'MyTeison')
 
 token = None
 device_id = None
+isOnline = False
 
 def is_hassio():
     return (
@@ -285,7 +286,7 @@ def login_and_get_device():
         device_id = None
 
 
-def post_sensor(sensor_id, state, attributes):
+def post_sensor(sensor_id, state, attributes, sensor_type="sensor"):
     global last_sent_states
 
     # 1. Convert state to string for consistent comparison and HA compatibility
@@ -307,9 +308,9 @@ def post_sensor(sensor_id, state, attributes):
 
         # 2. Match the URL to the token type
         if os.environ.get("SUPERVISOR_TOKEN"):
-            url = f"http://supervisor/core/api/states/sensor.{sensor_id}"
+            url = f"http://supervisor/core/api/states/{sensor_type}.{sensor_id}"
         else:
-            url = f"{HA_BASE_URL}sensor.{sensor_id}"
+            url = f"{HA_BASE_URL}{sensor_type}.{sensor_id}"
 
         # 3. Construct headers on-the-fly
         headers = {
@@ -335,7 +336,7 @@ def post_sensor(sensor_id, state, attributes):
 
 
 def mqtt_publish_status():
-    global token, device_id
+    global token, device_id, isOnline
     getCpConfig = None
     getRates = None
     slow_poll_counter = 0
@@ -345,6 +346,7 @@ def mqtt_publish_status():
         # 1. AUTHENTICATION CHECK: Ensure we have a session before doing anything
         if not token or not device_id:
             debug_print("🔑 Authentication missing. Attempting login...")
+            isOnline = False
             try:
                 login_and_get_device()
                 if not token:
@@ -365,13 +367,17 @@ def mqtt_publish_status():
             if status.get("code") in [401, 403] or status.get("message") == "token invalid":
                 debug_print("⚠️ Token expired or invalid. Resetting for re-login...")
                 token = None
+                isOnline = False
                 continue
 
             biz_data = status.get("bizData", {})
             if not biz_data:
                 debug_print("⚠️ Received empty bizData. Skipping this cycle.")
+                isOnline = False
                 time.sleep(pull_interval)
                 continue
+            
+            isOnline = True
 
             # 4. DATA EXTRACTION
             voltage = biz_data.get("voltage")
@@ -415,6 +421,12 @@ def mqtt_publish_status():
                 "friendly_name": "EV Charger Status",
                 "icon": "mdi:ev-station"
             })
+
+            # Online Status
+            post_sensor("ev_charger_online_status", "on" if isOnline else "off", {
+                "friendly_name": "EV Charger Online Status",
+                "device_class": "connectivity"
+            }, sensor_type="binary_sensor")
 
             # Power and Energy
             post_sensor("ev_charger_power", power, {
@@ -468,6 +480,7 @@ def mqtt_publish_status():
 
         except Exception as err:
             debug_print(f"❌ Error in MQTT loop: {err}")
+            isOnline = False
             # If we get a connection error, we don't clear the token, just wait
 
         time.sleep(pull_interval)
@@ -599,6 +612,18 @@ client.publish(
         "state_topic": "teison/charger/state",
         "payload_on": "start",
         "payload_off": "stop"
+    }),
+    retain=True
+)
+client.publish(
+    "homeassistant/binary_sensor/teison_charger_online/config",
+    json.dumps({
+        "name": "Teison Charger Online",
+        "unique_id": "teison_charger_online",
+        "state_topic": "teison/charger/online/state",
+        "payload_on": "on",
+        "payload_off": "off",
+        "device_class": "connectivity"
     }),
     retain=True
 )
