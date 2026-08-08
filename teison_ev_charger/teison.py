@@ -325,7 +325,7 @@ def post_sensor(sensor_id, state, attributes, sensor_type="sensor"):
 
         response = requests.post(url, headers=headers, json=payload, timeout=10)
 
-        if response.status_code == 200:
+        if response.status_code in [200, 201]: # Added 201 to successful status codes
             debug_print(f"✅ Updated {sensor_id}")
         else:
             # This will show us EXACTLY what the supervisor is complaining about
@@ -377,7 +377,15 @@ def mqtt_publish_status():
                 time.sleep(pull_interval)
                 continue
             
-            isOnline = True
+            # Extract connStatus here to use it for isOnline logic
+            connStatus = biz_data.get("connStatus")
+
+            # Update isOnline based on connStatus
+            if connStatus == 7: # 7 means "Unavailable"
+                isOnline = False
+                debug_print("⚠️ Device is unavailable (connStatus 7). Setting isOnline to False.")
+            else:
+                isOnline = True # Set to True if biz_data is present and not unavailable
 
             # 4. DATA EXTRACTION
             voltage = biz_data.get("voltage")
@@ -386,7 +394,7 @@ def mqtt_publish_status():
             current = biz_data.get("current")
             current2 = biz_data.get("current2")
             current3 = biz_data.get("current3")
-            connStatus = biz_data.get("connStatus")
+            # connStatus is already extracted above
             energy = biz_data.get("energy")
             temperature = biz_data.get("temperature")
             spendTime = biz_data.get("spendTime")
